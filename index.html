@@ -1,0 +1,3056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Memory Support</title>
+  <style>
+    :root{
+      --bg:#141a17;
+      --panel:#1c2520;
+      --panel2:#243129;
+      --panel3:#101612;
+      --text:#edf3ee;
+      --muted:#b6c3ba;
+      --accent:#7f9d89;
+      --accent2:#94b39f;
+      --good:#6f8f7a;
+      --warn:#8e7660;
+      --danger:#8b5f69;
+      --border:#36463b;
+      --soft:#43564a;
+      --today:#8aa998;
+      --calendarCell:#101612;
+      --calendarCellAlt:#17201b;
+      --taskMarker:#8ba69a;
+      --reminderMarker:#c3a86b;
+      --doneMarker:#9db9a4;
+      --paymentMarker:#7eb395;
+      --workMarker:#b88aa1;
+
+      --cardBlue:rgba(45,58,52,.92);
+      --cardBlueBorder:rgba(112,137,123,.34);
+      --cardBlueText:#d8e4dd;
+      --cardBlueBlock:#405048;
+      --cardBlueTitle:#314039;
+
+      --cardGreen:rgba(36,66,51,.92);
+      --cardGreenBorder:rgba(100,150,122,.30);
+      --cardGreenText:#d7ebdf;
+      --cardGreenBlock:#365542;
+      --cardGreenTitle:#284335;
+
+      --cardAmber:rgba(74,60,53,.92);
+      --cardAmberBorder:rgba(170,142,124,.24);
+      --cardAmberText:#ebddd4;
+      --cardAmberBlock:#5a4b43;
+      --cardAmberTitle:#4a3d36;
+
+      --cardLavender:rgba(67,56,71,.92);
+      --cardLavenderBorder:rgba(146,129,159,.24);
+      --cardLavenderText:#e7ddec;
+      --cardLavenderBlock:#584a5d;
+      --cardLavenderTitle:#463b4a;
+
+      --cardRose:rgba(83,58,65,.92);
+      --cardRoseBorder:rgba(176,130,145,.24);
+      --cardRoseText:#f0dce3;
+      --cardRoseBlock:#684b55;
+      --cardRoseTitle:#533b43;
+
+      --yellowAlert:#c2a25a;
+      --yellowAlertBg:rgba(194,162,90,.14);
+    }
+
+    body.light{
+      --bg:#f4f8f5;
+      --panel:#e4efe7;
+      --panel2:#d7e6dc;
+      --panel3:#eef6f0;
+      --text:#223329;
+      --muted:#5f7165;
+      --accent:#6f8f7a;
+      --accent2:#587261;
+      --good:#2f6f4f;
+      --warn:#a16207;
+      --danger:#b91c1c;
+      --border:#bdd2c4;
+      --soft:#6f8f7a;
+      --today:#6f8f7a;
+      --calendarCell:#edf5ef;
+      --calendarCellAlt:#e1ece5;
+      --taskMarker:#6f8f7a;
+      --reminderMarker:#b7791f;
+      --doneMarker:#2f6f4f;
+      --paymentMarker:#2e7d5f;
+      --workMarker:#a85584;
+
+      --cardBlue:rgba(101,123,97,.18);
+      --cardBlueBorder:rgba(101,123,97,.30);
+      --cardBlueText:#35503b;
+      --cardBlueBlock:#d6e2d5;
+      --cardBlueTitle:#bfd0be;
+
+      --cardGreen:rgba(63,109,76,.18);
+      --cardGreenBorder:rgba(63,109,76,.28);
+      --cardGreenText:#214a2d;
+      --cardGreenBlock:#cddfce;
+      --cardGreenTitle:#b3ccb6;
+
+      --cardAmber:rgba(149,108,65,.16);
+      --cardAmberBorder:rgba(149,108,65,.24);
+      --cardAmberText:#6e4b22;
+      --cardAmberBlock:#e6d8c8;
+      --cardAmberTitle:#d7c2ab;
+
+      --cardLavender:rgba(125,102,110,.14);
+      --cardLavenderBorder:rgba(125,102,110,.22);
+      --cardLavenderText:#5f4a51;
+      --cardLavenderBlock:#e4d9dc;
+      --cardLavenderTitle:#d5c5ca;
+
+      --cardRose:rgba(151,87,105,.15);
+      --cardRoseBorder:rgba(151,87,105,.24);
+      --cardRoseText:#7a4051;
+      --cardRoseBlock:#ecd6dc;
+      --cardRoseTitle:#debec8;
+
+      --yellowAlert:#9a6a10;
+      --yellowAlertBg:rgba(234,179,8,.18);
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      padding:16px;
+      transition:background .15s ease,color .15s ease;
+    }
+
+    .app{max-width:1320px;margin:0 auto}
+    h1,h2,h3,h4,p{margin:0 0 10px 0}
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+
+    .title-wrap p{color:var(--muted);font-size:14px}
+
+    .tabs{
+      display:flex;
+      gap:8px;
+      overflow:auto;
+      margin-bottom:16px;
+      padding-bottom:4px;
+    }
+
+    .tab{
+      border:none;
+      background:var(--panel2);
+      color:var(--text);
+      padding:10px 14px;
+      border-radius:10px;
+      cursor:pointer;
+      white-space:nowrap;
+      font-size:15px;
+      border:1px solid var(--border);
+    }
+
+    .tab.active{
+      background:var(--accent);
+      color:#fff;
+      border-color:var(--accent);
+    }
+
+    .subtabs{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+
+    .subtab{
+      border:none;
+      background:var(--panel3);
+      color:var(--muted);
+      border:1px solid var(--border);
+      padding:8px 12px;
+      border-radius:999px;
+      cursor:pointer;
+      font-size:13px;
+    }
+
+    .subtab.active{
+      background:var(--accent);
+      border-color:var(--accent);
+      color:#fff;
+    }
+
+
+    .screen,.subscreen{display:none}
+    .screen.active,.subscreen.active{display:block}
+    .screen,.panel,.dashboard-card,.list-item,.payment-card,.payment-occurrence,.calendar-cell{min-width:0}
+
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
+      margin-bottom:14px;
+    }
+
+    .panel-title{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+
+    .muted{color:var(--muted);font-size:14px}
+    .helper{color:var(--muted);font-size:13px;line-height:1.45;margin-top:6px}
+
+    .grid{display:grid;gap:12px}
+    .grid-2{grid-template-columns:1fr}
+    @media (min-width:760px){ .grid-2{grid-template-columns:1fr 1fr} }
+
+    .two-col-layout{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+    }
+    @media (min-width:980px){
+      .two-col-layout{grid-template-columns:420px minmax(0,1fr)}
+    }
+
+    .calendar-layout{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+    }
+    @media (min-width:980px){
+      .calendar-layout{grid-template-columns:300px minmax(0,1fr)}
+    }
+
+    label{
+      display:block;
+      font-size:14px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+
+    input, textarea, select{
+      width:100%;
+      background:var(--panel3);
+      color:var(--text);
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:12px;
+      font-size:16px;
+      outline:none;
+    }
+
+    input:focus, textarea:focus, select:focus{border-color:var(--accent)}
+    textarea{min-height:88px;resize:vertical}
+    .big-thought-box{min-height:120px}
+
+    .currency-wrap{position:relative}
+    .currency-symbol{
+      position:absolute;
+      left:12px;
+      top:50%;
+      transform:translateY(-50%);
+      color:var(--muted);
+      font-weight:700;
+      pointer-events:none;
+    }
+    .currency-wrap input{padding-left:28px}
+
+    .row{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .btn{
+      border:none;
+      border-radius:10px;
+      padding:10px 14px;
+      cursor:pointer;
+      font-size:14px;
+      color:#fff;
+      background:var(--panel2);
+    }
+
+    .btn.small{font-size:13px;padding:7px 10px;border-radius:8px}
+    .btn.primary{background:var(--accent)}
+    .btn.primary:hover{background:var(--accent2)}
+    .btn.good{background:var(--good)}
+    .btn.warn{background:var(--warn)}
+    .btn.danger{background:var(--danger)}
+    .btn.soft{background:var(--soft)}
+    body.light .btn{
+      border:1px solid rgba(87,114,97,.18);
+      color:#f8faf8;
+    }
+    body.light .btn.primary{
+      background:#6f8f7a;
+      border-color:#5e7b67;
+    }
+    body.light .btn.primary:hover{background:#587261}
+    body.light .btn.good{
+      background:#587261;
+      border-color:#486051;
+    }
+    body.light .btn.warn{
+      background:#9a7a52;
+      border-color:#826342;
+    }
+    body.light .btn.danger{
+      background:#956775;
+      border-color:#7d5360;
+    }
+    body.light .btn.soft{
+      background:#7b927f;
+      border-color:#657a68;
+      color:#f8faf8;
+    }
+
+    .field-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+    }
+    @media (min-width:760px){
+      .stats{grid-template-columns:repeat(4,1fr)}
+    }
+
+    .stat{
+      background:var(--panel3);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:12px;
+    }
+    .stat .num{
+      font-size:24px;
+      font-weight:700;
+      margin-bottom:4px;
+    }
+
+    .badge-row{
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+      margin:8px 0;
+    }
+
+    .badge{
+      display:inline-block;
+      background:var(--panel3);
+      border:1px solid var(--border);
+      color:var(--muted);
+      border-radius:999px;
+      padding:4px 8px;
+      font-size:12px;
+    }
+
+    body.light .badge{
+      background:#edf3ee;
+      border-color:#c4d1c7;
+      color:#58695e;
+    }
+
+    .badge.payment-type-badge{
+      font-weight:700;
+      border-width:1px;
+    }
+
+    .badge.type-bill{
+      background:rgba(113,134,125,.22);
+      border-color:rgba(140,166,151,.32);
+      color:#d8e4dd;
+    }
+
+    .badge.type-credit-card{
+      background:rgba(139,95,105,.22);
+      border-color:rgba(170,124,136,.32);
+      color:#f0d7de;
+    }
+
+    .badge.type-subscription{
+      background:rgba(110,96,122,.24);
+      border-color:rgba(146,129,159,.32);
+      color:#e2d8ea;
+    }
+
+    .badge.type-one-time{
+      background:rgba(142,118,96,.22);
+      border-color:rgba(177,151,126,.32);
+      color:#eadfce;
+    }
+
+    body.light .badge.type-bill{
+      background:#dbe3ed;
+      border-color:#afbccb;
+      color:#4d6074;
+    }
+
+    body.light .badge.type-credit-card{
+      background:#ecd8dd;
+      border-color:#c9aab4;
+      color:#7f5762;
+    }
+
+    body.light .badge.type-subscription{
+      background:#e4dde8;
+      border-color:#beb1c7;
+      color:#665b73;
+    }
+
+    body.light .badge.type-one-time{
+      background:#eadfcf;
+      border-color:#c9b49b;
+      color:#816548;
+    }
+
+    .note{white-space:pre-wrap;line-height:1.45;margin:8px 0}
+    .meta{color:var(--muted);font-size:13px;margin-top:6px}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .empty{color:var(--muted);padding:10px 0}
+
+    .chip-row{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+
+    .chip{
+      border:none;
+      background:var(--panel3);
+      color:var(--muted);
+      border:1px solid var(--border);
+      padding:8px 10px;
+      border-radius:999px;
+      cursor:pointer;
+      font-size:13px;
+    }
+
+    body.light .chip{
+      background:#eaf1eb;
+      color:#5a6b60;
+      border-color:#c1cfc4;
+    }
+
+    .chip.active{
+      background:var(--accent);
+      color:#fff;
+      border-color:var(--accent);
+    }
+
+    body.light .chip.active{
+      background:#6f8f7a;
+      border-color:#5d7866;
+      color:#f8faf8;
+    }
+
+    .sr-only{
+      position:absolute;
+      width:1px;
+      height:1px;
+      padding:0;
+      margin:-1px;
+      overflow:hidden;
+      clip:rect(0,0,0,0);
+      white-space:nowrap;
+      border:0;
+    }
+
+    .dashboard-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+    }
+    @media (min-width:860px){
+      .dashboard-grid{grid-template-columns:1fr 1fr}
+    }
+
+    .dashboard-card{
+      border-radius:14px;
+      padding:14px;
+      border:1px solid var(--border);
+      min-height:300px;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .dashboard-card .dashboard-card-body{
+      overflow:auto;
+      max-height:330px;
+      padding-right:2px;
+    }
+
+    .dashboard-card.blue{background:var(--cardBlue);border-color:var(--cardBlueBorder)}
+    .dashboard-card.green{background:var(--cardGreen);border-color:var(--cardGreenBorder)}
+    .dashboard-card.amber{background:var(--cardAmber);border-color:var(--cardAmberBorder)}
+    .dashboard-card.lavender{background:var(--cardLavender);border-color:var(--cardLavenderBorder)}
+    .dashboard-card.rose{background:var(--cardRose);border-color:var(--cardRoseBorder)}
+
+    .dashboard-card.blue .dashboard-item{background:var(--cardBlueBlock)}
+    .dashboard-card.green .dashboard-item{background:var(--cardGreenBlock)}
+    .dashboard-card.amber .dashboard-item{background:var(--cardAmberBlock)}
+    .dashboard-card.lavender .dashboard-item{background:var(--cardLavenderBlock)}
+    .dashboard-card.rose .dashboard-item{background:var(--cardRoseBlock)}
+
+    .dashboard-card.blue .dashboard-titlebar{background:var(--cardBlueTitle)}
+    .dashboard-card.green .dashboard-titlebar{background:var(--cardGreenTitle)}
+    .dashboard-card.amber .dashboard-titlebar{background:var(--cardAmberTitle)}
+    .dashboard-card.lavender .dashboard-titlebar{background:var(--cardLavenderTitle)}
+    .dashboard-card.rose .dashboard-titlebar{background:var(--cardRoseTitle)}
+
+    .dashboard-card.blue .dashboard-item-tint{color:var(--cardBlueText)}
+    .dashboard-card.green .dashboard-item-tint{color:var(--cardGreenText)}
+    .dashboard-card.amber .dashboard-item-tint{color:var(--cardAmberText)}
+    .dashboard-card.lavender .dashboard-item-tint{color:var(--cardLavenderText)}
+    .dashboard-card.rose .dashboard-item-tint{color:var(--cardRoseText)}
+
+    .dashboard-item{
+      border-radius:12px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.08);
+      margin-bottom:10px;
+    }
+
+    .dashboard-titlebar{
+      padding:10px 12px;
+      font-weight:700;
+      line-height:1.3;
+    }
+
+    .dashboard-body{padding:12px}
+
+    .list-item{
+      background:var(--panel2);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:12px;
+      margin-bottom:10px;
+    }
+
+    .is-complete{
+      opacity:.74;
+    }
+
+    .list-item.is-complete,
+    .payment-occurrence.is-complete{
+      border-color:rgba(148,163,184,.45);
+    }
+
+    .is-complete .card-title,
+    .is-complete .note,
+    .is-complete .meta,
+    .is-complete .dashboard-item-tint,
+    .is-complete .complete-line{
+      text-decoration:line-through;
+      color:var(--muted) !important;
+    }
+
+    .is-complete .badge{
+      color:var(--muted);
+      border-color:rgba(148,163,184,.35);
+    }
+
+    .list-item.alert-yellow{
+      background:var(--yellowAlertBg);
+      border-color:var(--yellowAlert);
+    }
+
+    .card-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+      margin-bottom:8px;
+    }
+
+    .card-title{font-weight:700;line-height:1.35}
+
+    .calendar-grid{
+      display:grid;
+      grid-template-columns:repeat(7,minmax(0,1fr));
+      gap:8px;
+    }
+
+    .weekday{
+      text-align:center;
+      color:var(--muted);
+      font-size:13px;
+      padding:8px 0;
+      font-weight:600;
+    }
+
+    .calendar-cell{
+      min-height:120px;
+      background:var(--calendarCell);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:8px;
+      cursor:pointer;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      position:relative;
+      transition:background .12s ease, border-color .12s ease, transform .12s ease;
+      overflow:hidden;
+    }
+
+    .calendar-cell.week-alt{background:var(--calendarCellAlt)}
+    .calendar-cell:hover{border-color:var(--accent)}
+    .calendar-cell.other-month{opacity:.45}
+    .calendar-cell.selected{outline:2px solid var(--accent)}
+    .calendar-cell.today{
+      background:rgba(37,99,235,.16);
+      border-color:var(--today);
+    }
+    .calendar-cell.today.week-alt{background:rgba(37,99,235,.22)}
+    .calendar-cell.drop-target{
+      border-color:#60a5fa;
+      background:rgba(30,58,138,.36);
+      transform:scale(1.01);
+    }
+    .calendar-cell.expanded{
+      min-height:260px;
+      z-index:2;
+    }
+
+    .day-num{font-weight:700;font-size:14px}
+    .day-items{display:flex;flex-direction:column;gap:4px;overflow:hidden}
+    .calendar-cell.expanded .day-items{overflow:visible}
+
+    .day-pill{
+      background:var(--panel2);
+      border:1px solid var(--border);
+      border-radius:8px;
+      padding:4px 6px;
+      font-size:11px;
+      line-height:1.2;
+      color:var(--text);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .calendar-cell.expanded .day-pill{
+      white-space:normal;
+      overflow:visible;
+      text-overflow:unset;
+    }
+
+    .day-pill.task{border-left:4px solid var(--taskMarker)}
+    .day-pill.reminder{border-left:4px solid var(--reminderMarker)}
+    .day-pill.done{
+      border-left:4px solid var(--doneMarker);
+      opacity:.78;
+      text-decoration:line-through;
+      color:var(--muted);
+    }
+    .day-pill.payment{border-left:4px solid var(--paymentMarker)}
+    .day-pill.work{border-left:4px solid var(--workMarker)}
+
+    .paid-payment-text{text-decoration:line-through;opacity:.82;color:var(--muted)}
+    .checkmark{color:var(--doneMarker);font-weight:700;margin-right:6px}
+
+    .day-count{
+      font-size:11px;
+      color:var(--muted);
+      margin-top:auto;
+    }
+
+    .calendar-expand-link{
+      font-size:11px;
+      color:var(--accent);
+      cursor:pointer;
+      margin-top:2px;
+      user-select:none;
+      font-weight:600;
+    }
+
+    .drag-panel{
+      background:var(--panel3);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:12px;
+      max-height:760px;
+      overflow:auto;
+    }
+
+    .drag-item{
+      background:var(--panel2);
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:10px;
+      margin-bottom:8px;
+      cursor:grab;
+    }
+    .drag-item:active{cursor:grabbing}
+    .drag-item-title{font-size:14px;line-height:1.35;font-weight:600;margin-bottom:6px}
+    .drag-item-note{font-size:12px;color:var(--muted);line-height:1.35;white-space:pre-wrap}
+
+    .assign-row{
+      background:var(--panel2);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:12px;
+      margin-bottom:10px;
+    }
+    .assign-row-title{font-weight:700;line-height:1.35}
+    .assign-row-note{font-size:13px;color:var(--muted);line-height:1.4;white-space:pre-wrap;margin-top:6px}
+
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      z-index:9999;
+    }
+
+    .modal-backdrop.open{display:flex}
+    .modal{
+      width:min(920px,100%);
+      max-height:90vh;
+      overflow:auto;
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:16px;
+    }
+
+    .modal-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:12px;
+    }
+
+    .modal-close{
+      border:none;
+      background:var(--soft);
+      color:#fff;
+      border-radius:10px;
+      padding:8px 12px;
+      cursor:pointer;
+    }
+
+    .payment-card{
+      background:var(--panel2);
+      border:1px solid var(--border);
+      border-left:6px solid var(--border);
+      border-radius:12px;
+      padding:12px;
+      margin-bottom:10px;
+    }
+
+    .payment-amount{
+      font-size:14px;
+      color:var(--paymentMarker);
+      font-weight:700;
+    }
+
+    .payment-due{
+      font-size:13px;
+      color:var(--muted);
+      margin-top:4px;
+    }
+
+    .payment-occurrence{
+      background:rgba(57,88,68,.18);
+      border:1px solid rgba(126,179,149,.22);
+      border-left:6px solid rgba(126,179,149,.36);
+      border-radius:12px;
+      padding:12px;
+      margin-bottom:10px;
+    }
+
+    .payment-occurrence.type-bill,
+    .payment-card.type-bill{border-left-color:#8fa39a}
+
+    .payment-occurrence.type-credit-card,
+    .payment-card.type-credit-card{border-left-color:#a97b86}
+
+    .payment-occurrence.type-subscription,
+    .payment-card.type-subscription{border-left-color:#8f7ea0}
+
+    .payment-occurrence.type-one-time,
+    .payment-card.type-one-time{border-left-color:#b1977e}
+
+    body.light .payment-occurrence{background:rgba(16,185,129,.08)}
+
+    .history-row{
+      background:var(--panel3);
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:10px 12px;
+      margin-bottom:8px;
+    }
+
+    .day-detail-layout{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+    }
+    @media (min-width:900px){
+      .day-detail-layout{grid-template-columns:1fr 1fr}
+    }
+
+    .current-total-box{
+      background:#ffffff;
+      color:#166534;
+      border-radius:12px;
+      border:1px solid #d1d5db;
+      padding:10px 14px;
+      font-weight:700;
+      font-size:20px;
+      min-width:140px;
+      text-align:center;
+    }
+
+    .secondary-total-box{
+      background:var(--panel3);
+      color:var(--text);
+      border-radius:12px;
+      border:1px solid var(--border);
+      padding:10px 14px;
+      font-weight:700;
+      font-size:16px;
+      min-width:140px;
+      text-align:center;
+    }
+
+    .payments-month-toolbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+
+    .sort-toggle-btn{
+      min-width:150px;
+      text-align:center;
+    }
+
+    .payments-month-totals{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .track-list{
+      display:grid;
+      gap:10px;
+    }
+
+    #completed .dashboard-card{
+      min-height:0;
+    }
+
+    #completed .dashboard-card .dashboard-card-body{
+      max-height:none;
+      overflow:visible;
+    }
+
+    @media (max-width:700px){
+      .calendar-grid{
+        gap:6px;
+      }
+
+      .calendar-cell{
+        min-height:105px;
+        padding:6px;
+      }
+
+      .day-pill{
+        font-size:10px;
+        padding:4px 5px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="title-wrap">
+        <h1>Daily Memory Support</h1>
+        <p>A calm place to catch things now and find them later.</p>
+      </div>
+      <div class="row">
+        <button class="btn soft" id="themeToggleBtn" onclick="toggleTheme()">Light Mode</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="home" onclick="switchTab('home', event)">Home</button>
+      <button class="tab" data-tab="calendar" onclick="switchTab('calendar', event)">Calendar</button>
+      <button class="tab" data-tab="payments" onclick="switchTab('payments', event)">Payments</button>
+      <button class="tab" data-tab="tasks" onclick="switchTab('tasks', event)">Tasks</button>
+      <button class="tab" data-tab="work" onclick="switchTab('work', event)">Work</button>
+      <button class="tab" data-tab="completed" onclick="switchTab('completed', event)">Completed</button>
+      <button class="tab" data-tab="search" onclick="switchTab('search', event)">Search</button>
+      <button class="tab" data-tab="review" onclick="switchTab('review', event)">Reviews</button>
+    </div>
+
+    <section id="home" class="screen active">
+      <div class="panel">
+        <div class="panel-title">
+          <h2>Don’t Forget right now</h2>
+          <span class="muted">Capture first. Sort later.</span>
+        </div>
+        <div class="grid">
+          <div>
+            <label for="dfThought">What’s on your mind?</label>
+            <textarea id="dfThought" class="big-thought-box" placeholder="Type anything you don’t want to lose..."></textarea>
+            <div class="field-actions">
+              <button class="btn soft small" onclick="startVoiceCaptureForField('dfThought', true, 'home')">Speak Thought</button>
+            </div>
+          </div>
+          <div class="row">
+            <button class="btn primary" onclick="saveDontForget()">Save Reminder</button>
+            <button class="btn soft" onclick="clearDontForgetForm()">Clear</button>
+            <button class="btn soft" onclick="switchTab('calendar')">Open Calendar</button>
+          </div>
+          <div id="homeVoiceStatus" class="helper"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">
+          <h2>Home</h2>
+          <div class="muted" id="homeDateLabel"></div>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="num" id="statOpen">0</div><div class="muted">Open tasks</div></div>
+          <div class="stat"><div class="num" id="statToday">0</div><div class="muted">For today</div></div>
+          <div class="stat"><div class="num" id="statDontForget">0</div><div class="muted">Saved reminders</div></div>
+          <div class="stat"><div class="num" id="statWaiting">0</div><div class="muted">Waiting on</div></div>
+        </div>
+      </div>
+
+      <div id="homeDashboard"></div>
+    </section>
+
+    <section id="calendar" class="screen">
+      <div class="calendar-layout">
+        <div class="drag-panel">
+          <div class="panel-title">
+            <h3>Unscheduled reminders</h3>
+            <span class="muted" id="unscheduledCount">0</span>
+          </div>
+          <div class="helper" style="margin-bottom:10px;">Drag a reminder onto a day box. Use “Show all” on busy days. Click a selected day again to open the full day window.</div>
+          <div id="dragReminderList"></div>
+        </div>
+
+        <div>
+          <div class="panel">
+            <div class="panel-title">
+              <div>
+                <h2 id="calendarMonthLabel">Calendar</h2>
+                <div class="muted">Click once to select a day. Click the same day again to open the day window.</div>
+              </div>
+              <div class="row">
+                <button class="btn soft" onclick="changeMonth(-1)">Previous</button>
+                <button class="btn soft" onclick="goToCurrentMonth()">This Month</button>
+                <button class="btn soft" onclick="changeMonth(1)">Next</button>
+              </div>
+            </div>
+            <div class="calendar-grid" id="calendarWeekdays"></div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-title">
+              <h3 id="selectedDateLabel">Selected day</h3>
+              <div class="row">
+                <span class="muted">View, add, and place things visually</span>
+                <button class="btn small soft" onclick="openDayModal()">Open Day Window</button>
+              </div>
+            </div>
+            <div class="day-detail-layout">
+              <div>
+                <h4>Items on this day</h4>
+                <div id="selectedDayItems"></div>
+              </div>
+              <div>
+                <div class="panel" style="margin-bottom:12px;">
+                  <div class="panel-title">
+                    <h4>Add directly to this day</h4>
+                    <span class="muted">Reminder or task</span>
+                  </div>
+                  <div class="grid">
+                    <div>
+                      <label for="quickDayEntryText">Text / note</label>
+                      <textarea id="quickDayEntryText" placeholder="Add what should happen on this day..."></textarea>
+                    </div>
+                    <div class="grid grid-2">
+                      <div>
+                        <label for="quickDayEntryType">Type</label>
+                        <select id="quickDayEntryType" onchange="toggleQuickDayCategory()">
+                          <option value="dontForget">Reminder</option>
+                          <option value="task">Task</option>
+                        </select>
+                      </div>
+                      <div id="quickDayCategoryWrap" style="display:none;">
+                        <label for="quickDayTaskCategory">Category</label>
+                        <select id="quickDayTaskCategory">
+                          <option value="Personal">Personal</option>
+                          <option value="Work">Work</option>
+                          <option value="Health">Health</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div id="quickDayStatusWrap" style="display:none;">
+                      <label for="quickDayTaskStatus">Status</label>
+                      <select id="quickDayTaskStatus">
+                        <option value="now">Now</option>
+                        <option value="later">Later</option>
+                        <option value="waiting">Waiting On</option>
+                      </select>
+                    </div>
+                    <div class="row">
+                      <button class="btn primary" onclick="addEntryToSelectedDate()">Save to This Day</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="panel" style="margin-bottom:0;">
+                  <div class="panel-title">
+                    <h4>Place unscheduled reminders on this day</h4>
+                    <span class="muted">One-click date assignment</span>
+                  </div>
+                  <div id="assignableDontForgetList"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="payments" class="screen">
+      <div class="subtabs">
+        <button class="subtab active" data-payment-subtab="payments-current" onclick="switchPaymentSubtab('payments-current', event)">Current Month</button>
+        <button class="subtab" data-payment-subtab="payments-month" onclick="switchPaymentSubtab('payments-month', event)">Month Track</button>
+        <button class="subtab" data-payment-subtab="payments-history" onclick="switchPaymentSubtab('payments-history', event)">History</button>
+      </div>
+
+      <div id="payments-current" class="subscreen active">
+        <div class="two-col-layout">
+          <div class="panel">
+            <div class="panel-title">
+              <h2>Add / Edit Payment</h2>
+              <span class="muted">Bills, cards, subscriptions, one-time</span>
+            </div>
+            <div class="grid">
+              <div class="grid grid-2">
+                <div>
+                  <label for="paymentName">Name</label>
+                  <input id="paymentName" placeholder="Example: Electric bill" />
+                </div>
+                <div>
+                  <label for="paymentAmount">Amount</label>
+                  <div class="currency-wrap">
+                    <span class="currency-symbol">$</span>
+                    <input id="paymentAmount" inputmode="decimal" placeholder="0.00" oninput="handlePaymentAmountInput()" onblur="formatPaymentAmountField()" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid grid-2">
+                <div>
+                  <label for="paymentType">Type</label>
+                  <select id="paymentType">
+                    <option value="bill">Bill</option>
+                    <option value="credit card">Credit Card</option>
+                    <option value="subscription">Subscription</option>
+                    <option value="one-time">One-Time</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="paymentRecurring">Recurring monthly?</label>
+                  <select id="paymentRecurring" onchange="togglePaymentDateInputs()">
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-2">
+                <div id="paymentDueDayWrap">
+                  <label for="paymentDueDay">Due day of month</label>
+                  <select id="paymentDueDay"></select>
+                </div>
+                <div id="paymentSpecificDateWrap" style="display:none;">
+                  <label for="paymentSpecificDate">Specific date</label>
+                  <input id="paymentSpecificDate" type="date" />
+                </div>
+                <div>
+                  <label for="paymentActive">Active?</label>
+                  <select id="paymentActive">
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label for="paymentNotes">Notes (optional)</label>
+                <textarea id="paymentNotes" placeholder="Anything helpful to remember..."></textarea>
+              </div>
+
+              <input type="hidden" id="paymentEditId" />
+              <div class="row">
+                <button class="btn primary" id="paymentSaveBtn" onclick="savePayment()">Save Payment</button>
+                <button class="btn soft" onclick="clearPaymentForm()">Clear</button>
+                <button class="btn warn" id="paymentCancelEditBtn" style="display:none;" onclick="cancelPaymentEdit()">Cancel Edit</button>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="panel">
+              <div class="panel-title">
+                <div>
+                  <h2 id="currentMonthPaymentHeading">Current month payments</h2>
+                  <span class="muted" id="currentMonthPaymentSubtext">Current month only. 1st to last day.</span>
+                </div>
+                <div class="row">
+                  <button class="btn soft sort-toggle-btn" id="paymentSortToggleBtn" onclick="cycleCurrentPaymentSort()">Sort: Soonest</button>
+                  <div class="current-total-box" id="currentMonthPaymentTotal">$0.00</div>
+                </div>
+              </div>
+              <div id="currentMonthPaymentList"></div>
+            </div>
+
+            <div class="panel" style="margin-bottom:0;">
+              <div class="panel-title">
+                <h3>Saved payment setups</h3>
+                <span class="muted">Edit, pause, resume, or remove</span>
+              </div>
+              <div id="paymentSetupList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="payments-month" class="subscreen">
+        <div class="panel">
+          <div class="payments-month-toolbar">
+            <div>
+              <h2 id="paymentTrackHeading">Recurring month track</h2>
+              <div class="muted">Soonest to latest. Check them off as you go.</div>
+            </div>
+            <div class="row">
+              <button class="btn soft" onclick="changePaymentTrackMonth(-1)">Previous</button>
+              <button class="btn soft" onclick="resetPaymentTrackMonth()">This Month</button>
+              <button class="btn soft" onclick="changePaymentTrackMonth(1)">Next</button>
+            </div>
+          </div>
+          <div class="payments-month-toolbar" style="margin-top:0;">
+            <div class="muted" id="paymentTrackSubtext"></div>
+            <div class="payments-month-totals">
+              <div class="secondary-total-box" id="paymentTrackRemainingBox">$0.00 left</div>
+              <div class="current-total-box" id="paymentTrackTotalBox">$0.00</div>
+            </div>
+          </div>
+          <div id="paymentTrackList" class="track-list"></div>
+        </div>
+      </div>
+
+      <div id="payments-history" class="subscreen">
+        <div class="panel">
+          <div class="panel-title">
+            <h2>Paid history by payment</h2>
+            <span class="muted">Lightweight monthly history</span>
+          </div>
+          <div id="paymentHistoryList"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tasks" class="screen">
+      <div class="two-col-layout">
+        <div class="panel">
+          <div class="panel-title">
+            <h2>Add Task</h2>
+            <span class="muted">Personal, health, general tasks</span>
+          </div>
+          <div class="grid">
+            <div>
+              <label for="taskTitle">Title</label>
+              <input id="taskTitle" placeholder="Example: Call pharmacy tomorrow" />
+            </div>
+            <div>
+              <label for="taskNote">Notes</label>
+              <textarea id="taskNote" placeholder="Why it matters, what was said, next step, anything useful..."></textarea>
+            </div>
+            <div class="grid grid-2">
+              <div>
+                <label for="taskCategory">Category</label>
+                <select id="taskCategory">
+                  <option value="Personal">Personal</option>
+                  <option value="Health">Health</option>
+                  <option value="Work">Work</option>
+                </select>
+              </div>
+              <div>
+                <label for="taskStatus">Status</label>
+                <select id="taskStatus">
+                  <option value="now">Now</option>
+                  <option value="later">Later</option>
+                  <option value="waiting">Waiting On</option>
+                  <option value="done">Done</option>
+                </select>
+              </div>
+            </div>
+            <div class="grid grid-2">
+              <div>
+                <label for="taskPriority">Priority label</label>
+                <select id="taskPriority">
+                  <option value="none">Not urgent</option>
+                  <option value="urgent">Urgent</option>
+                  <option value="today">Today</option>
+                  <option value="tomorrow">Tomorrow</option>
+                  <option value="week">This week</option>
+                </select>
+              </div>
+              <div>
+                <label for="taskDate">Date (optional)</label>
+                <input type="date" id="taskDate" />
+              </div>
+            </div>
+            <div>
+              <label for="taskPinned">Pin this?</label>
+              <select id="taskPinned">
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+              </select>
+            </div>
+            <input type="hidden" id="taskEditId" />
+            <div class="row">
+              <button class="btn primary" id="taskSaveBtn" onclick="saveTask()">Save Task</button>
+              <button class="btn soft" onclick="clearTaskForm()">Clear</button>
+              <button class="btn warn" id="taskCancelEditBtn" style="display:none;" onclick="cancelTaskEdit()">Cancel Edit</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">
+            <h2>Task list</h2>
+            <span class="muted">Urgent / today / tomorrow / this week / not urgent</span>
+          </div>
+          <div class="chip-row" id="taskCategoryFilters"></div>
+          <div id="taskList"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="work" class="screen">
+      <div class="two-col-layout">
+        <div class="panel">
+          <div class="panel-title">
+            <h2>Add Work Item</h2>
+            <span class="muted">Email, invoice, doc, call, meeting</span>
+          </div>
+          <div class="grid">
+            <div>
+              <label for="workTitle">Title</label>
+              <input id="workTitle" placeholder="Example: Send invoice to client" />
+            </div>
+            <div>
+              <label for="workNote">Notes</label>
+              <textarea id="workNote" placeholder="Anything useful..."></textarea>
+            </div>
+            <div class="grid grid-2">
+              <div>
+                <label for="workLabel">Label</label>
+                <select id="workLabel">
+                  <option value="email">Email</option>
+                  <option value="invoice">Invoice</option>
+                  <option value="doc">Doc</option>
+                  <option value="call">Call</option>
+                  <option value="meeting">Meeting</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div>
+                <label for="workStatus">Status</label>
+                <select id="workStatus">
+                  <option value="now">Now</option>
+                  <option value="later">Later</option>
+                  <option value="waiting">Waiting On</option>
+                  <option value="done">Done</option>
+                </select>
+              </div>
+            </div>
+            <div class="grid grid-2">
+              <div>
+                <label for="workPriority">Priority label</label>
+                <select id="workPriority">
+                  <option value="none">Not urgent</option>
+                  <option value="urgent">Urgent</option>
+                  <option value="today">Today</option>
+                  <option value="tomorrow">Tomorrow</option>
+                  <option value="week">This week</option>
+                </select>
+              </div>
+              <div>
+                <label for="workDate">Date (optional)</label>
+                <input type="date" id="workDate" />
+              </div>
+            </div>
+            <div>
+              <label for="workStartTime">Start time</label>
+              <input type="time" id="workStartTime" />
+            </div>
+            <input type="hidden" id="workEditId" />
+            <div class="row">
+              <button class="btn primary" id="workSaveBtn" onclick="saveWorkItem()">Save Work Item</button>
+              <button class="btn soft" onclick="clearWorkForm()">Clear</button>
+              <button class="btn warn" id="workCancelEditBtn" style="display:none;" onclick="cancelWorkEdit()">Cancel Edit</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">
+            <h2>Work list</h2>
+            <span class="muted">Priority ordered</span>
+          </div>
+          <div id="workList"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="completed" class="screen">
+      <div id="completedPanels"></div>
+    </section>
+
+    <section id="search" class="screen">
+      <div class="panel">
+        <div class="panel-title">
+          <h2>Search</h2>
+          <span class="muted">Find what you already wrote down</span>
+        </div>
+        <input id="searchInput" type="text" placeholder="Search thoughts, tasks, work, notes, payments..." oninput="renderSearch()" />
+        <div id="searchResults"></div>
+      </div>
+    </section>
+
+    <section id="review" class="screen">
+      <div class="panel">
+        <div class="panel-title">
+          <h2>Reviews</h2>
+          <span class="muted">Backup, restore, readable copy</span>
+        </div>
+        <div class="row">
+          <button class="btn soft" onclick="downloadBackup()">Download Backup</button>
+          <button class="btn soft" onclick="shareBackup()">Share Backup</button>
+          <button class="btn soft" onclick="downloadReadableCopy()">Download Readable Copy</button>
+          <label class="btn soft" for="restoreFile" style="display:inline-flex;align-items:center;cursor:pointer;">Restore Backup</label>
+          <input id="restoreFile" class="sr-only" type="file" accept=".json" onchange="restoreBackup(event)" />
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="dayModalBackdrop" class="modal-backdrop" onclick="closeDayModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <h3 id="dayModalTitle">Selected day</h3>
+          <div class="muted">Add directly from the calendar box</div>
+        </div>
+        <button class="modal-close" onclick="closeDayModal()">Close</button>
+      </div>
+
+      <div class="day-detail-layout">
+        <div>
+          <h4>Items on this day</h4>
+          <div id="modalDayItems"></div>
+        </div>
+        <div>
+          <div class="panel" style="margin-bottom:12px;">
+            <div class="panel-title">
+              <h4>Add directly to this day</h4>
+              <span class="muted">Reminder or task</span>
+            </div>
+            <div class="grid">
+              <div>
+                <label for="modalEntryText">Text / note</label>
+                <textarea id="modalEntryText" placeholder="Add what should happen on this day..."></textarea>
+              </div>
+              <div class="grid grid-2">
+                <div>
+                  <label for="modalEntryType">Type</label>
+                  <select id="modalEntryType" onchange="toggleModalDayFields()">
+                    <option value="dontForget">Reminder</option>
+                    <option value="task">Task</option>
+                  </select>
+                </div>
+                <div id="modalCategoryWrap" style="display:none;">
+                  <label for="modalTaskCategory">Category</label>
+                  <select id="modalTaskCategory">
+                    <option value="Personal">Personal</option>
+                    <option value="Work">Work</option>
+                    <option value="Health">Health</option>
+                  </select>
+                </div>
+              </div>
+              <div id="modalStatusWrap" style="display:none;">
+                <label for="modalTaskStatus">Status</label>
+                <select id="modalTaskStatus">
+                  <option value="now">Now</option>
+                  <option value="later">Later</option>
+                  <option value="waiting">Waiting On</option>
+                </select>
+              </div>
+              <div class="row">
+                <button class="btn primary" onclick="addEntryFromDayModal()">Save to This Day</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel" style="margin-bottom:0;">
+            <div class="panel-title">
+              <h4>Place unscheduled reminders on this day</h4>
+              <span class="muted">One-click date assignment</span>
+            </div>
+            <div id="modalAssignableReminders"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "daily_memory_support_v71_items";
+    const WORK_STORAGE_KEY = "daily_memory_support_v71_work";
+    const PAYMENT_STORAGE_KEY = "daily_memory_support_v71_payments";
+    const PAYMENT_OCC_KEY = "daily_memory_support_v71_payment_occurrences";
+    const THEME_KEY = "daily_memory_support_v71_theme";
+
+    let items = loadJson(STORAGE_KEY, []);
+    let workItems = loadJson(WORK_STORAGE_KEY, []);
+    let payments = loadJson(PAYMENT_STORAGE_KEY, []);
+    let paymentOccurrences = loadJson(PAYMENT_OCC_KEY, {});
+    let themeMode = localStorage.getItem(THEME_KEY) || "dark";
+
+    let taskCategoryFilter = "All";
+    let currentPaymentSortMode = "soonest";
+    let calendarViewDate = new Date();
+    let paymentTrackMonthDate = new Date();
+    let selectedDate = todayString();
+    let expandedDate = "";
+
+    let editingReminderId = null;
+    let draggedItemId = null;
+
+    function loadJson(key, fallback){
+      try{
+        const parsed = JSON.parse(localStorage.getItem(key));
+        return parsed ?? fallback;
+      }catch{
+        return fallback;
+      }
+    }
+
+    function persistAll(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+      localStorage.setItem(WORK_STORAGE_KEY, JSON.stringify(workItems));
+      localStorage.setItem(PAYMENT_STORAGE_KEY, JSON.stringify(payments));
+      localStorage.setItem(PAYMENT_OCC_KEY, JSON.stringify(paymentOccurrences));
+      localStorage.setItem(THEME_KEY, themeMode);
+    }
+
+    function nowStamp(){ return new Date().toISOString(); }
+    function todayString(){ return formatDateYMD(new Date()); }
+
+    function formatDateYMD(date){
+      const y = date.getFullYear();
+      const m = String(date.getMonth()+1).padStart(2,"0");
+      const d = String(date.getDate()).padStart(2,"0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function parseYMD(str){ return new Date(str + "T00:00:00"); }
+
+    function formatYearMonth(dateObj){
+      return `${dateObj.getFullYear()}-${String(dateObj.getMonth()+1).padStart(2,"0")}`;
+    }
+
+    function monthLabelFromDate(dateObj){
+      return dateObj.toLocaleDateString(undefined,{
+        month:"long",
+        year:"2-digit"
+      });
+    }
+
+    function friendlyDate(str){
+      if(!str) return "No date";
+      return parseYMD(str).toLocaleDateString(undefined,{ weekday:"short", month:"short", day:"numeric", year:"2-digit" });
+    }
+
+    function friendlyShortDate(str){
+      if(!str) return "No date";
+      return parseYMD(str).toLocaleDateString(undefined,{ month:"short", day:"numeric", year:"2-digit" });
+    }
+
+    function friendlyPageDate(date = new Date()){
+      return date.toLocaleDateString(undefined,{ weekday:"long", month:"long", day:"numeric", year:"2-digit" });
+    }
+
+    function formatStamp(stamp){
+      if(!stamp) return "";
+      return new Date(stamp).toLocaleString(undefined,{ month:"short", day:"numeric", year:"2-digit", hour:"numeric", minute:"2-digit" });
+    }
+
+    function escapeHtml(str){
+      return (str || "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function thoughtToTitleAndNote(thought){
+      const clean = (thought || "").trim();
+      if(!clean) return { title:"(No title)", note:"" };
+      const oneLine = clean.replace(/\n+/g, " ").trim();
+      if(oneLine.length <= 60) return { title:oneLine, note:clean };
+      const words = oneLine.split(/\s+/);
+      return { title:words.slice(0,8).join(" "), note:clean };
+    }
+
+    function normalizeCurrencyInput(raw){
+      if(!raw) return "";
+      const cleaned = String(raw).replace(/[^0-9.]/g, "");
+      if(!cleaned) return "";
+      const pieces = cleaned.split(".");
+      const safe = pieces.length > 2 ? `${pieces[0]}.${pieces.slice(1).join("")}` : cleaned;
+      const num = Number(safe);
+      if(Number.isNaN(num)) return "";
+      return `$${num.toFixed(2)}`;
+    }
+
+    function parseCurrencyToNumber(raw){
+      if(!raw) return 0;
+      const cleaned = String(raw).replace(/[^0-9.-]/g, "");
+      const num = Number(cleaned);
+      return Number.isNaN(num) ? 0 : num;
+    }
+
+    function handlePaymentAmountInput(){
+      const el = document.getElementById("paymentAmount");
+      let raw = String(el.value || "").replace(/[^0-9.]/g, "");
+      const parts = raw.split(".");
+      if(parts.length > 2) raw = `${parts[0]}.${parts.slice(1).join("")}`;
+      el.value = raw;
+    }
+
+    function formatPaymentAmountField(){
+      const el = document.getElementById("paymentAmount");
+      const formatted = normalizeCurrencyInput(el.value);
+      el.value = formatted ? formatted.replace(/^\$/, "") : "";
+    }
+
+    function displayCurrency(raw){
+      const normalized = normalizeCurrencyInput(raw);
+      return normalized || "$0.00";
+    }
+
+    function paymentTypeClass(type){
+      return {
+        "bill":"type-bill",
+        "credit card":"type-credit-card",
+        "subscription":"type-subscription",
+        "one-time":"type-one-time"
+      }[String(type || "").toLowerCase()] || "type-bill";
+    }
+
+    function paymentSortLabel(mode){
+      return {
+        soonest:"Soonest",
+        latest:"Latest",
+        price:"Price"
+      }[mode] || "Soonest";
+    }
+
+    function sortPaymentOccurrences(list, mode = currentPaymentSortMode){
+      return [...list].sort((a,b) => {
+        if(mode === "latest"){
+          if(a.date !== b.date) return b.date.localeCompare(a.date);
+          return a.title.localeCompare(b.title);
+        }
+        if(mode === "price"){
+          const priceDiff = parseCurrencyToNumber(b.amount) - parseCurrencyToNumber(a.amount);
+          if(priceDiff !== 0) return priceDiff;
+          if(a.date !== b.date) return a.date.localeCompare(b.date);
+          return a.title.localeCompare(b.title);
+        }
+        if(a.date !== b.date) return a.date.localeCompare(b.date);
+        return a.title.localeCompare(b.title);
+      });
+    }
+
+    function cycleCurrentPaymentSort(){
+      const order = ["soonest","latest","price"];
+      const nextIndex = (order.indexOf(currentPaymentSortMode) + 1) % order.length;
+      currentPaymentSortMode = order[nextIndex];
+      renderPayments();
+    }
+
+    function statusLabel(status){
+      return {
+        now:"Now",
+        later:"Later",
+        waiting:"Waiting On",
+        done:"Done"
+      }[status] || "Later";
+    }
+
+    function priorityRank(priority){
+      return { urgent:0, today:1, tomorrow:2, week:3, none:4 }[priority || "none"] ?? 4;
+    }
+
+    function sortByPriorityThenDate(list){
+      return [...list].sort((a,b) => {
+        const pr = priorityRank(a.priority) - priorityRank(b.priority);
+        if(pr !== 0) return pr;
+        const aDate = a.date || "9999-12-31";
+        const bDate = b.date || "9999-12-31";
+        if(aDate !== bDate) return aDate.localeCompare(bDate);
+        return new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt);
+      });
+    }
+
+    function sortItems(list){
+      return [...list].sort((a,b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt));
+    }
+
+    function sortPayments(list){
+      return [...list].sort((a,b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt));
+    }
+
+    function applyTheme(){
+      document.body.classList.toggle("light", themeMode === "light");
+      document.getElementById("themeToggleBtn").textContent = themeMode === "light" ? "Dark Mode" : "Light Mode";
+    }
+
+    function toggleTheme(){
+      themeMode = themeMode === "light" ? "dark" : "light";
+      applyTheme();
+      persistAll();
+    }
+
+    function switchTab(tab, event){
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      document.getElementById(tab).classList.add("active");
+
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      if(event) event.target.classList.add("active");
+      else document.querySelector(`.tab[data-tab="${tab}"]`)?.classList.add("active");
+
+      renderScreen(tab);
+    }
+
+    function switchPaymentSubtab(tab, event){
+      document.querySelectorAll(".subscreen").forEach(s => s.classList.remove("active"));
+      document.getElementById(tab).classList.add("active");
+
+      document.querySelectorAll(".subtab").forEach(t => t.classList.remove("active"));
+      if(event) event.target.classList.add("active");
+      else document.querySelector(`.subtab[data-payment-subtab="${tab}"]`)?.classList.add("active");
+
+      renderPayments();
+    }
+
+    function clearDontForgetForm(){
+      document.getElementById("dfThought").value = "";
+      document.getElementById("homeVoiceStatus").textContent = "";
+      editingReminderId = null;
+    }
+
+    function clearTaskForm(){
+      document.getElementById("taskTitle").value = "";
+      document.getElementById("taskNote").value = "";
+      document.getElementById("taskCategory").value = "Personal";
+      document.getElementById("taskStatus").value = "now";
+      document.getElementById("taskPriority").value = "none";
+      document.getElementById("taskDate").value = "";
+      document.getElementById("taskPinned").value = "false";
+      document.getElementById("taskEditId").value = "";
+      document.getElementById("taskSaveBtn").textContent = "Save Task";
+      document.getElementById("taskCancelEditBtn").style.display = "none";
+    }
+
+    function clearWorkForm(){
+      document.getElementById("workTitle").value = "";
+      document.getElementById("workNote").value = "";
+      document.getElementById("workLabel").value = "email";
+      document.getElementById("workStatus").value = "now";
+      document.getElementById("workPriority").value = "none";
+      document.getElementById("workDate").value = "";
+      document.getElementById("workStartTime").value = "";
+      document.getElementById("workEditId").value = "";
+      document.getElementById("workSaveBtn").textContent = "Save Work Item";
+      document.getElementById("workCancelEditBtn").style.display = "none";
+    }
+
+    function clearPaymentForm(){
+      document.getElementById("paymentName").value = "";
+      document.getElementById("paymentAmount").value = "";
+      document.getElementById("paymentType").value = "bill";
+      document.getElementById("paymentRecurring").value = "true";
+      document.getElementById("paymentDueDay").value = "1";
+      document.getElementById("paymentSpecificDate").value = "";
+      document.getElementById("paymentActive").value = "true";
+      document.getElementById("paymentNotes").value = "";
+      document.getElementById("paymentEditId").value = "";
+      document.getElementById("paymentSaveBtn").textContent = "Save Payment";
+      document.getElementById("paymentCancelEditBtn").style.display = "none";
+      togglePaymentDateInputs();
+    }
+
+    function cancelTaskEdit(){ clearTaskForm(); }
+    function cancelWorkEdit(){ clearWorkForm(); }
+    function cancelPaymentEdit(){ clearPaymentForm(); }
+
+    function saveDontForget(){
+      const thought = document.getElementById("dfThought").value.trim();
+      if(!thought){ alert("Type or speak a thought first."); return; }
+
+      if(editingReminderId){
+        items = items.map(item => item.id === editingReminderId
+          ? { ...item, note:thought, title:thoughtToTitleAndNote(thought).title, updatedAt:nowStamp() }
+          : item
+        );
+      } else {
+        const split = thoughtToTitleAndNote(thought);
+        items.unshift({
+          id: Date.now(),
+          type: "dontForget",
+          title: split.title,
+          note: thought,
+          category: "",
+          status: "later",
+          priority: "none",
+          date: "",
+          pinned: false,
+          createdAt: nowStamp(),
+          updatedAt: nowStamp(),
+          doneAt: null
+        });
+      }
+
+      persistAll();
+      clearDontForgetForm();
+      renderAll();
+    }
+
+    function saveTask(){
+      const title = document.getElementById("taskTitle").value.trim();
+      const note = document.getElementById("taskNote").value.trim();
+      const category = document.getElementById("taskCategory").value;
+      const status = document.getElementById("taskStatus").value;
+      const priority = document.getElementById("taskPriority").value;
+      const date = document.getElementById("taskDate").value;
+      const pinned = document.getElementById("taskPinned").value === "true";
+      const editId = document.getElementById("taskEditId").value;
+
+      if(!title && !note){ alert("Add a title or note first."); return; }
+
+      const payload = {
+        type:"task",
+        title:title || "(No title)",
+        note,
+        category,
+        status,
+        priority,
+        date,
+        pinned,
+        updatedAt:nowStamp(),
+        doneAt:status === "done" ? nowStamp() : null
+      };
+
+      if(editId){
+        items = items.map(item => String(item.id) === String(editId) ? { ...item, ...payload } : item);
+      } else {
+        items.unshift({ id: Date.now(), createdAt: nowStamp(), ...payload });
+      }
+
+      persistAll();
+      clearTaskForm();
+      renderAll();
+    }
+
+    function saveWorkItem(){
+      const title = document.getElementById("workTitle").value.trim();
+      const note = document.getElementById("workNote").value.trim();
+      const label = document.getElementById("workLabel").value;
+      const status = document.getElementById("workStatus").value;
+      const priority = document.getElementById("workPriority").value;
+      const date = document.getElementById("workDate").value;
+      const startTime = document.getElementById("workStartTime").value;
+      const editId = document.getElementById("workEditId").value;
+
+      if(!title && !note){ alert("Add a title or note first."); return; }
+
+      const payload = {
+        title:title || "(No title)",
+        note,
+        label,
+        status,
+        priority,
+        date,
+        startTime,
+        updatedAt:nowStamp(),
+        doneAt:status === "done" ? nowStamp() : null
+      };
+
+      if(editId){
+        workItems = workItems.map(item => String(item.id) === String(editId) ? { ...item, ...payload } : item);
+      } else {
+        workItems.unshift({ id: Date.now(), createdAt: nowStamp(), ...payload });
+      }
+
+      persistAll();
+      clearWorkForm();
+      renderAll();
+    }
+
+    function populateDueDayOptions(){
+      const select = document.getElementById("paymentDueDay");
+      select.innerHTML = "";
+      for(let i=1;i<=31;i++){
+        const opt = document.createElement("option");
+        opt.value = String(i);
+        opt.textContent = String(i);
+        select.appendChild(opt);
+      }
+    }
+
+    function togglePaymentDateInputs(){
+      const recurring = document.getElementById("paymentRecurring").value === "true";
+      document.getElementById("paymentDueDayWrap").style.display = recurring ? "block" : "none";
+      document.getElementById("paymentSpecificDateWrap").style.display = recurring ? "none" : "block";
+    }
+
+    function savePayment(){
+      const name = document.getElementById("paymentName").value.trim();
+      const amountRaw = document.getElementById("paymentAmount").value;
+      const amount = normalizeCurrencyInput(amountRaw);
+      const paymentType = document.getElementById("paymentType").value;
+      const isRecurringMonthly = document.getElementById("paymentRecurring").value === "true";
+      const dueDay = Number(document.getElementById("paymentDueDay").value || 1);
+      const specificDate = document.getElementById("paymentSpecificDate").value;
+      const isActive = document.getElementById("paymentActive").value === "true";
+      const notes = document.getElementById("paymentNotes").value.trim();
+      const editId = document.getElementById("paymentEditId").value;
+
+      if(!name){ alert("Add a payment name first."); return; }
+      if(!amount){ alert("Add an amount first."); return; }
+      if(!isRecurringMonthly && !specificDate){ alert("Choose a specific date for a one-time payment."); return; }
+
+      const payload = {
+        name,
+        amount,
+        paymentType,
+        notes,
+        dueDay: isRecurringMonthly ? dueDay : null,
+        specificDate: isRecurringMonthly ? "" : specificDate,
+        startDate: isRecurringMonthly ? todayString() : specificDate,
+        isRecurringMonthly,
+        isActive,
+        updatedAt: nowStamp()
+      };
+
+      if(editId){
+        payments = payments.map(p => String(p.id) === String(editId) ? { ...p, ...payload } : p);
+      } else {
+        payments.unshift({ id: Date.now(), createdAt: nowStamp(), ...payload });
+      }
+
+      persistAll();
+      clearPaymentForm();
+      renderAll();
+    }
+
+    function editTask(id){
+      const item = items.find(i => i.id === id && i.type === "task");
+      if(!item) return;
+      switchTab("tasks");
+      document.getElementById("taskTitle").value = item.title || "";
+      document.getElementById("taskNote").value = item.note || "";
+      document.getElementById("taskCategory").value = item.category || "Personal";
+      document.getElementById("taskStatus").value = item.status || "now";
+      document.getElementById("taskPriority").value = item.priority || "none";
+      document.getElementById("taskDate").value = item.date || "";
+      document.getElementById("taskPinned").value = item.pinned ? "true" : "false";
+      document.getElementById("taskEditId").value = item.id;
+      document.getElementById("taskSaveBtn").textContent = "Update Task";
+      document.getElementById("taskCancelEditBtn").style.display = "inline-block";
+    }
+
+    function editWorkItem(id){
+      const item = workItems.find(i => i.id === id);
+      if(!item) return;
+      switchTab("work");
+      document.getElementById("workTitle").value = item.title || "";
+      document.getElementById("workNote").value = item.note || "";
+      document.getElementById("workLabel").value = item.label || "email";
+      document.getElementById("workStatus").value = item.status || "now";
+      document.getElementById("workPriority").value = item.priority || "none";
+      document.getElementById("workDate").value = item.date || "";
+      document.getElementById("workStartTime").value = item.startTime || "";
+      document.getElementById("workEditId").value = item.id;
+      document.getElementById("workSaveBtn").textContent = "Update Work Item";
+      document.getElementById("workCancelEditBtn").style.display = "inline-block";
+    }
+
+    function editDontForget(id){
+      const item = items.find(i => i.id === id && i.type === "dontForget");
+      if(!item) return;
+      switchTab("home");
+      editingReminderId = id;
+      document.getElementById("dfThought").value = item.note || item.title || "";
+    }
+
+    function editPayment(id){
+      const p = payments.find(x => x.id === id);
+      if(!p) return;
+      switchTab("payments");
+      switchPaymentSubtab("payments-current");
+      document.getElementById("paymentName").value = p.name || "";
+      document.getElementById("paymentAmount").value = p.amount ? String(p.amount).replace(/^\$/, "") : "";
+      document.getElementById("paymentType").value = p.paymentType || "bill";
+      document.getElementById("paymentRecurring").value = p.isRecurringMonthly ? "true" : "false";
+      document.getElementById("paymentDueDay").value = p.dueDay ? String(p.dueDay) : "1";
+      document.getElementById("paymentSpecificDate").value = p.specificDate || "";
+      document.getElementById("paymentActive").value = p.isActive ? "true" : "false";
+      document.getElementById("paymentNotes").value = p.notes || "";
+      document.getElementById("paymentEditId").value = p.id;
+      document.getElementById("paymentSaveBtn").textContent = "Update Payment";
+      document.getElementById("paymentCancelEditBtn").style.display = "inline-block";
+      togglePaymentDateInputs();
+      formatPaymentAmountField();
+    }
+
+    function updateItem(id, changes){
+      items = items.map(item => {
+        if(item.id !== id) return item;
+        const updated = { ...item, ...changes, updatedAt:nowStamp() };
+        if(changes.status === "done") updated.doneAt = nowStamp();
+        if(changes.status && changes.status !== "done") updated.doneAt = null;
+        return updated;
+      });
+      persistAll();
+      renderAll();
+    }
+
+    function updateWorkItem(id, changes){
+      workItems = workItems.map(item => {
+        if(item.id !== id) return item;
+        const updated = { ...item, ...changes, updatedAt:nowStamp() };
+        if(changes.status === "done") updated.doneAt = nowStamp();
+        if(changes.status && changes.status !== "done") updated.doneAt = null;
+        return updated;
+      });
+      persistAll();
+      renderAll();
+    }
+
+    function markDone(id){ updateItem(id,{status:"done"}); }
+    function markNow(id){ updateItem(id,{status:"now"}); }
+    function markWorkDone(id){ updateWorkItem(id,{status:"done"}); }
+    function markWorkNow(id){ updateWorkItem(id,{status:"now"}); }
+    function moveToToday(id){ updateItem(id,{date:todayString()}); }
+
+    function togglePinned(id){
+      const item = items.find(i => i.id === id);
+      if(!item) return;
+      updateItem(id,{pinned:!item.pinned});
+    }
+
+    function cycleTaskStatus(id){
+      const item = items.find(i => i.id === id && i.type === "task");
+      if(!item) return;
+      const order = ["now","later","waiting","done"];
+      const next = order[(order.indexOf(item.status)+1)%order.length];
+      updateItem(id,{status:next});
+    }
+
+    function cycleWorkStatus(id){
+      const item = workItems.find(i => i.id === id);
+      if(!item) return;
+      const order = ["now","later","waiting","done"];
+      const next = order[(order.indexOf(item.status)+1)%order.length];
+      updateWorkItem(id,{status:next});
+    }
+
+    function convertDontForgetToTask(id){
+      items = items.map(entry => entry.id === id
+        ? { ...entry, type:"task", category:"Personal", status:"later", priority:"none", updatedAt:nowStamp() }
+        : entry
+      );
+      persistAll();
+      renderAll();
+      switchTab("tasks");
+    }
+
+    function assignItemToDate(id, dateStr){
+      updateItem(id,{date:dateStr});
+      renderDayModal();
+    }
+
+    function handleDragStart(event, id){
+      draggedItemId = id;
+      event.dataTransfer.effectAllowed = "move";
+      event.dataTransfer.setData("text/plain", String(id));
+    }
+
+    function allowDrop(event, dateStr){
+      event.preventDefault();
+      event.dataTransfer.dropEffect = "move";
+      highlightDropTarget(dateStr, true);
+    }
+
+    function dragLeaveDay(dateStr){ highlightDropTarget(dateStr, false); }
+
+    function highlightDropTarget(dateStr, isOn){
+      document.querySelector(`[data-date="${dateStr}"]`)?.classList.toggle("drop-target", isOn);
+    }
+
+    function dropOnDate(event, dateStr){
+      event.preventDefault();
+      highlightDropTarget(dateStr, false);
+      const id = Number(event.dataTransfer.getData("text/plain") || draggedItemId);
+      if(!id) return;
+      const item = items.find(i => i.id === id && i.type === "dontForget");
+      if(!item) return;
+      assignItemToDate(id, dateStr);
+      draggedItemId = null;
+    }
+
+    function removeDate(id){
+      updateItem(id,{date:""});
+      renderDayModal();
+    }
+
+    function deleteItem(id){
+      if(!confirm("Delete this item?")) return;
+      items = items.filter(item => item.id !== id);
+      persistAll();
+      renderAll();
+      renderDayModal();
+    }
+
+    function deleteWorkItem(id){
+      if(!confirm("Delete this work item?")) return;
+      workItems = workItems.filter(item => item.id !== id);
+      persistAll();
+      renderAll();
+    }
+
+    function deletePayment(id){
+      if(!confirm("Delete this payment?")) return;
+      payments = payments.filter(p => p.id !== id);
+      Object.keys(paymentOccurrences).forEach(key => {
+        const [storedId] = key.split("_");
+        if(String(storedId) === String(id)) delete paymentOccurrences[key];
+      });
+      persistAll();
+      renderAll();
+    }
+
+    function pausePayment(id){
+      payments = payments.map(p => p.id === id ? { ...p, isActive:false, updatedAt:nowStamp() } : p);
+      persistAll();
+      renderAll();
+    }
+
+    function resumePayment(id){
+      payments = payments.map(p => p.id === id ? { ...p, isActive:true, updatedAt:nowStamp() } : p);
+      persistAll();
+      renderAll();
+    }
+
+    function stopPaymentRecurrence(id){
+      if(!confirm("Stop monthly recurrence for this payment?")) return;
+      payments = payments.map(p => p.id === id ? { ...p, isRecurringMonthly:false, isActive:false, updatedAt:nowStamp() } : p);
+      persistAll();
+      renderAll();
+      renderDayModal();
+    }
+
+    function paymentOccurrenceKey(paymentId, yearMonth){
+      return `${paymentId}_${yearMonth}`;
+    }
+
+    function getLastDayOfMonth(year, monthIndex){
+      return new Date(year, monthIndex + 1, 0).getDate();
+    }
+
+    function getPaymentOccurrenceDate(payment, year, monthIndex){
+      if(payment.isRecurringMonthly){
+        const lastDay = getLastDayOfMonth(year, monthIndex);
+        const due = Math.min(Number(payment.dueDay || 1), lastDay);
+        return formatDateYMD(new Date(year, monthIndex, due));
+      }
+      return payment.specificDate || "";
+    }
+
+    function getPaymentOccurrencesForMonth(year, monthIndex){
+      const yearMonth = `${year}-${String(monthIndex+1).padStart(2,"0")}`;
+      const occurrences = [];
+
+      payments.forEach(payment => {
+        if(!payment.isActive) return;
+
+        if(payment.isRecurringMonthly){
+          const dateStr = getPaymentOccurrenceDate(payment, year, monthIndex);
+          const key = paymentOccurrenceKey(payment.id, yearMonth);
+          const occState = paymentOccurrences[key] || { status:"due", paidAt:null };
+
+          occurrences.push({
+            id:`payment_${payment.id}_${yearMonth}`,
+            kind:"paymentOccurrence",
+            paymentId:payment.id,
+            date:dateStr,
+            title:payment.name,
+            amount:payment.amount,
+            paymentType:payment.paymentType,
+            notes:payment.notes,
+            isRecurringMonthly:true,
+            status:occState.status || "due",
+            paidAt:occState.paidAt || null,
+            yearMonth
+          });
+        } else if(payment.specificDate){
+          const d = parseYMD(payment.specificDate);
+          if(d.getFullYear() === year && d.getMonth() === monthIndex){
+            const yearMonthKey = formatYearMonth(d);
+            const key = paymentOccurrenceKey(payment.id, yearMonthKey);
+            const occState = paymentOccurrences[key] || { status:"due", paidAt:null };
+
+            occurrences.push({
+              id:`payment_${payment.id}_${yearMonthKey}`,
+              kind:"paymentOccurrence",
+              paymentId:payment.id,
+              date:payment.specificDate,
+              title:payment.name,
+              amount:payment.amount,
+              paymentType:payment.paymentType,
+              notes:payment.notes,
+              isRecurringMonthly:false,
+              status:occState.status || "due",
+              paidAt:occState.paidAt || null,
+              yearMonth:yearMonthKey
+            });
+          }
+        }
+      });
+
+      return occurrences;
+    }
+
+    function getPaymentOccurrencesForDate(dateStr){
+      const d = parseYMD(dateStr);
+      return getPaymentOccurrencesForMonth(d.getFullYear(), d.getMonth()).filter(o => o.date === dateStr);
+    }
+
+    function getPaidHistoryByPayment(){
+      const grouped = {};
+      Object.entries(paymentOccurrences).forEach(([key, value]) => {
+        if(value.status !== "paid") return;
+        const [paymentId, yearMonth] = key.split("_");
+        const payment = payments.find(p => String(p.id) === String(paymentId));
+        if(!payment) return;
+        if(!grouped[paymentId]) grouped[paymentId] = { payment, rows:[] };
+        grouped[paymentId].rows.push({ yearMonth, paidAt:value.paidAt });
+      });
+
+      return Object.values(grouped).map(group => {
+        group.rows.sort((a,b) => b.yearMonth.localeCompare(a.yearMonth));
+        return group;
+      }).sort((a,b) => a.payment.name.localeCompare(b.payment.name));
+    }
+
+    function setPaymentOccurrenceStatus(paymentId, yearMonth, status){
+      paymentOccurrences[paymentOccurrenceKey(paymentId, yearMonth)] = {
+        status,
+        paidAt: status === "paid" ? nowStamp() : null
+      };
+      persistAll();
+      renderAll();
+      renderDayModal();
+    }
+
+    function markPaymentPaid(paymentId, yearMonth){ setPaymentOccurrenceStatus(paymentId, yearMonth, "paid"); }
+    function markPaymentUnpaid(paymentId, yearMonth){ setPaymentOccurrenceStatus(paymentId, yearMonth, "due"); }
+
+    function taskMatchesFilters(item){
+      if(item.type !== "task") return false;
+      if(taskCategoryFilter !== "All" && item.category !== taskCategoryFilter) return false;
+      return true;
+    }
+
+    function setTaskCategoryFilter(value){
+      taskCategoryFilter = value;
+      renderTasks();
+      renderTaskFilters();
+    }
+
+    function renderTaskFilters(){
+      const categories = ["All","Personal","Health","Work"];
+      document.getElementById("taskCategoryFilters").innerHTML = categories.map(c => `
+        <button class="chip ${taskCategoryFilter === c ? "active" : ""}" onclick="setTaskCategoryFilter('${c}')">${c}</button>
+      `).join("");
+    }
+
+    function staleDays(item){
+      const baseDate = item.date ? parseYMD(item.date) : new Date(item.createdAt || item.updatedAt);
+      const now = parseYMD(todayString());
+      return Math.floor((now - new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate())) / 86400000);
+    }
+
+    function renderItemCard(item, options = {}){
+      const isComplete = item.status === "done";
+      const wrapperClass = `${options.dashboard ? "dashboard-item" : "list-item"}${isComplete ? " is-complete" : ""}`;
+      const titleBar = options.dashboard
+        ? `<div class="dashboard-titlebar"><span class="dashboard-item-tint complete-line">${escapeHtml(item.title || "(No title)")}</span></div>`
+        : "";
+      const noteHtml = item.note ? `<div class="note ${options.dashboard ? "dashboard-item-tint" : ""} complete-line">${escapeHtml(item.note)}</div>` : "";
+      const bodyStart = options.dashboard ? `<div class="dashboard-body">` : ``;
+      const bodyEnd = options.dashboard ? `</div>` : ``;
+      const alertClass = options.alert ? " alert-yellow" : "";
+
+      let actionButtons = ``;
+      if(item.type === "dontForget"){
+        actionButtons += `
+          <button class="btn small primary" onclick="convertDontForgetToTask(${item.id})">Turn into Task</button>
+          <button class="btn small soft" onclick="editDontForget(${item.id})">Edit</button>
+          ${item.date ? `<button class="btn small warn" onclick="removeDate(${item.id})">Remove Date</button>` : ``}
+          <button class="btn small danger" onclick="deleteItem(${item.id})">Delete</button>
+        `;
+      } else {
+        actionButtons += `
+          <button class="btn small soft" onclick="editTask(${item.id})">Edit</button>
+          <button class="btn small soft" onclick="cycleTaskStatus(${item.id})">Next Status</button>
+          ${item.status !== "done" ? `<button class="btn small good" onclick="markDone(${item.id})">Done</button>` : `<button class="btn small warn" onclick="markNow(${item.id})">Reopen</button>`}
+          <button class="btn small danger" onclick="deleteItem(${item.id})">Delete</button>
+        `;
+      }
+
+      return `
+        <div class="${wrapperClass}${alertClass}">
+          ${titleBar}
+          ${bodyStart}
+          ${!options.dashboard ? `<div class="card-title complete-line">${escapeHtml(item.title || "(No title)")}</div>` : ``}
+          <div class="badge-row">
+            <span class="badge">${item.type === "dontForget" ? "Reminder" : "Task"}</span>
+            ${item.category ? `<span class="badge">${escapeHtml(item.category)}</span>` : ``}
+            ${item.priority ? `<span class="badge">${escapeHtml(item.priority)}</span>` : ``}
+            <span class="badge">${escapeHtml(statusLabel(item.status))}</span>
+            ${item.date ? `<span class="badge">${escapeHtml(friendlyShortDate(item.date))}</span>` : `<span class="badge">No date</span>`}
+          </div>
+          ${noteHtml}
+          <div class="meta">Updated ${escapeHtml(formatStamp(item.updatedAt || item.createdAt))}</div>
+          <div class="actions">${actionButtons}</div>
+          ${bodyEnd}
+        </div>
+      `;
+    }
+
+    function renderWorkCard(item, options = {}){
+      const isComplete = item.status === "done";
+      const wrapperClass = `${options.dashboard ? "dashboard-item" : "list-item"}${isComplete ? " is-complete" : ""}`;
+      const titleBar = options.dashboard
+        ? `<div class="dashboard-titlebar"><span class="dashboard-item-tint complete-line">${escapeHtml(item.title || "(No title)")}</span></div>`
+        : "";
+      const bodyStart = options.dashboard ? `<div class="dashboard-body">` : ``;
+      const bodyEnd = options.dashboard ? `</div>` : ``;
+
+      return `
+        <div class="${wrapperClass}">
+          ${titleBar}
+          ${bodyStart}
+          ${!options.dashboard ? `<div class="card-title complete-line">${escapeHtml(item.title || "(No title)")}</div>` : ``}
+          <div class="badge-row">
+            <span class="badge">Work</span>
+            <span class="badge">${escapeHtml(item.label || "other")}</span>
+            <span class="badge">${escapeHtml(item.priority || "none")}</span>
+            <span class="badge">${escapeHtml(statusLabel(item.status))}</span>
+            ${item.date ? `<span class="badge">${escapeHtml(friendlyShortDate(item.date))}</span>` : `<span class="badge">No date</span>`}
+            ${item.startTime ? `<span class="badge">${escapeHtml(item.startTime)}</span>` : ``}
+          </div>
+          ${item.note ? `<div class="note complete-line">${escapeHtml(item.note)}</div>` : ``}
+          <div class="meta">Updated ${escapeHtml(formatStamp(item.updatedAt || item.createdAt))}</div>
+          <div class="actions">
+            <button class="btn small soft" onclick="editWorkItem(${item.id})">Edit</button>
+            <button class="btn small soft" onclick="cycleWorkStatus(${item.id})">Next Status</button>
+            ${item.status !== "done" ? `<button class="btn small good" onclick="markWorkDone(${item.id})">Done</button>` : `<button class="btn small warn" onclick="markWorkNow(${item.id})">Reopen</button>`}
+            <button class="btn small danger" onclick="deleteWorkItem(${item.id})">Delete</button>
+          </div>
+          ${bodyEnd}
+        </div>
+      `;
+    }
+
+    function renderPaymentOccurrenceCard(occ, options = {}){
+      const paid = occ.status === "paid";
+      const typeClass = paymentTypeClass(occ.paymentType);
+      const wrapperClass = `${options.dashboard ? "dashboard-item" : `payment-occurrence ${typeClass}`}${paid ? " is-complete" : ""}`;
+      const titleBar = options.dashboard
+        ? `<div class="dashboard-titlebar">${paid ? `<span class="checkmark">✓</span>` : ""}<span class="dashboard-item-tint ${paid ? "paid-payment-text" : ""}">${escapeHtml(occ.title)}</span></div>`
+        : "";
+      const bodyStart = options.dashboard ? `<div class="dashboard-body">` : ``;
+      const bodyEnd = options.dashboard ? `</div>` : ``;
+
+      return `
+        <div class="${wrapperClass}">
+          ${titleBar}
+          ${bodyStart}
+          ${!options.dashboard ? `<div class="card-title">${paid ? `<span class="checkmark">✓</span><span class="paid-payment-text">${escapeHtml(occ.title)}</span>` : `💳 ${escapeHtml(occ.title)}`}</div>` : ``}
+          <div class="badge-row">
+            <span class="badge">Payment</span>
+            <span class="badge payment-type-badge ${typeClass}">${escapeHtml(occ.paymentType)}</span>
+            <span class="badge">${paid ? "Paid" : "Due"}</span>
+            <span class="badge">${escapeHtml(friendlyShortDate(occ.date))}</span>
+          </div>
+          ${occ.notes ? `<div class="note ${paid ? "paid-payment-text" : ""} ${options.dashboard ? "dashboard-item-tint" : ""}">${escapeHtml(occ.notes)}</div>` : ``}
+          <div class="meta">${escapeHtml(displayCurrency(occ.amount))}</div>
+          <div class="actions">
+            ${paid
+              ? `<button class="btn small warn" onclick="markPaymentUnpaid(${occ.paymentId}, '${occ.yearMonth}')">Mark Unpaid</button>`
+              : `<button class="btn small good" onclick="markPaymentPaid(${occ.paymentId}, '${occ.yearMonth}')">Mark Paid</button>`
+            }
+            <button class="btn small soft" onclick="editPayment(${occ.paymentId})">Edit Payment</button>
+          </div>
+          ${bodyEnd}
+        </div>
+      `;
+    }
+
+    function renderPaymentTemplateCard(p){
+      const recurrenceText = p.isRecurringMonthly ? `Monthly on day ${p.dueDay}` : `One-time on ${p.specificDate ? friendlyDate(p.specificDate) : "No date"}`;
+      const typeClass = paymentTypeClass(p.paymentType);
+
+      return `
+        <div class="payment-card ${typeClass}">
+          <div class="card-top">
+            <div>
+              <div class="card-title">${escapeHtml(p.name)}</div>
+              <div class="badge-row">
+                <span class="badge payment-type-badge ${typeClass}">${escapeHtml(p.paymentType)}</span>
+                <span class="badge">${p.isRecurringMonthly ? "Recurring monthly" : "One-time"}</span>
+                <span class="badge">${p.isActive ? "Active" : "Paused"}</span>
+              </div>
+            </div>
+            <div class="payment-amount">${escapeHtml(displayCurrency(p.amount))}</div>
+          </div>
+          <div class="payment-due">${escapeHtml(recurrenceText)}</div>
+          ${p.notes ? `<div class="note">${escapeHtml(p.notes)}</div>` : ``}
+          <div class="actions">
+            <button class="btn small soft" onclick="editPayment(${p.id})">Edit</button>
+            ${p.isActive ? `<button class="btn small warn" onclick="pausePayment(${p.id})">Pause</button>` : `<button class="btn small good" onclick="resumePayment(${p.id})">Resume</button>`}
+            ${p.isRecurringMonthly ? `<button class="btn small danger" onclick="stopPaymentRecurrence(${p.id})">Stop Recurrence</button>` : ``}
+            <button class="btn small danger" onclick="deletePayment(${p.id})">Delete</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function sectionCardHtml(title, subtitle, bodyHtml, cardClass){
+      return `
+        <div class="dashboard-card ${cardClass}">
+          <div class="panel-title">
+            <h3>${title}</h3>
+            <span class="muted">${subtitle}</span>
+          </div>
+          <div class="dashboard-card-body">${bodyHtml}</div>
+        </div>
+      `;
+    }
+
+    function getPaymentsDueSoon(daysAhead = 10){
+      const today = parseYMD(todayString());
+      const results = [];
+
+      for(let offset = 0; offset <= daysAhead; offset++){
+        const d = new Date(today);
+        d.setDate(d.getDate() + offset);
+        const dateStr = formatDateYMD(d);
+        results.push(...getPaymentOccurrencesForDate(dateStr).filter(o => o.status !== "paid"));
+      }
+
+      const overdue = [];
+      for(let offset = 1; offset <= 14; offset++){
+        const d = new Date(today);
+        d.setDate(d.getDate() - offset);
+        const dateStr = formatDateYMD(d);
+        overdue.push(...getPaymentOccurrencesForDate(dateStr).filter(o => o.status !== "paid"));
+      }
+
+      const unique = {};
+      [...overdue, ...results].forEach(o => unique[o.id] = o);
+      return Object.values(unique).sort((a,b) => a.date.localeCompare(b.date));
+    }
+
+    function getCurrentMonthPaymentOccurrences(){
+      const current = new Date();
+      return sortPaymentOccurrences(
+        getPaymentOccurrencesForMonth(current.getFullYear(), current.getMonth()),
+        currentPaymentSortMode
+      );
+    }
+
+    function currentMonthPaymentTotal(){
+      const occs = getCurrentMonthPaymentOccurrences();
+      const total = occs.reduce((sum, occ) => sum + parseCurrencyToNumber(occ.amount), 0);
+      return `$${total.toFixed(2)}`;
+    }
+
+    function getRecurringTrackOccurrences(){
+      return getPaymentOccurrencesForMonth(paymentTrackMonthDate.getFullYear(), paymentTrackMonthDate.getMonth())
+        .filter(o => o.isRecurringMonthly)
+        .sort((a,b) => {
+          if(a.date !== b.date) return a.date.localeCompare(b.date);
+          return a.title.localeCompare(b.title);
+        });
+    }
+
+    function changePaymentTrackMonth(delta){
+      paymentTrackMonthDate = new Date(paymentTrackMonthDate.getFullYear(), paymentTrackMonthDate.getMonth() + delta, 1);
+      renderPayments();
+    }
+
+    function resetPaymentTrackMonth(){
+      paymentTrackMonthDate = new Date();
+      renderPayments();
+    }
+
+    function recurringTrackTotal(){
+      const occs = getRecurringTrackOccurrences();
+      const total = occs.reduce((sum, occ) => sum + parseCurrencyToNumber(occ.amount), 0);
+      return `$${total.toFixed(2)}`;
+    }
+
+    function recurringTrackRemainingTotal(){
+      const occs = getRecurringTrackOccurrences().filter(occ => occ.status !== "paid");
+      const total = occs.reduce((sum, occ) => sum + parseCurrencyToNumber(occ.amount), 0);
+      return `$${total.toFixed(2)}`;
+    }
+
+    function computeTop3Tasks(){
+      const candidates = items.filter(i =>
+        i.type === "task" &&
+        i.status !== "done" &&
+        (i.priority === "urgent" || i.priority === "today" || i.date === todayString() || i.pinned)
+      );
+      return sortByPriorityThenDate(candidates).slice(0,3);
+    }
+
+    function computePickBackUp(top3Ids){
+      return sortByPriorityThenDate(
+        items.filter(i =>
+          i.type === "task" &&
+          i.status !== "done" &&
+          !top3Ids.has(i.id) &&
+          (
+            (i.date && i.date < todayString()) ||
+            (!i.date && new Date(i.updatedAt || i.createdAt).toDateString() !== new Date().toDateString())
+          )
+        )
+      );
+    }
+
+    function renderHome(){
+      document.getElementById("homeDateLabel").textContent = friendlyPageDate();
+
+      const tasks = items.filter(i => i.type === "task");
+      const dontForget = items.filter(i => i.type === "dontForget");
+      const openTasks = tasks.filter(i => i.status !== "done");
+      const waiting = tasks.filter(i => i.status === "waiting");
+
+      const topThree = computeTop3Tasks();
+      const top3Ids = new Set(topThree.map(t => t.id));
+      const pickBackUp = computePickBackUp(top3Ids);
+      const recentDontForget = sortItems(dontForget.filter(i => i.status !== "done")).slice(0,5);
+      const paymentsDueSoon = getPaymentsDueSoon(10).slice(0,8);
+
+      document.getElementById("statOpen").textContent = openTasks.length;
+      document.getElementById("statToday").textContent = tasks.filter(i => i.date === todayString() && i.status !== "done").length;
+      document.getElementById("statDontForget").textContent = dontForget.length;
+      document.getElementById("statWaiting").textContent = waiting.length;
+
+      const cards = [
+        sectionCardHtml(
+          "Top 3 for today",
+          "Hard cap. No chaos buffet.",
+          topThree.length ? topThree.map(i => renderItemCard(i, { dashboard:true })).join("") : `<div class="empty">Nothing urgent right now.</div>`,
+          "blue"
+        ),
+        sectionCardHtml(
+          "Payments due soon",
+          "Overdue first, then upcoming",
+          paymentsDueSoon.length ? paymentsDueSoon.map(o => renderPaymentOccurrenceCard(o, { dashboard:true })).join("") : `<div class="empty">No payments due soon.</div>`,
+          "green"
+        ),
+        sectionCardHtml(
+          "Pick back up",
+          "Carries over until you attend to it",
+          pickBackUp.length ? pickBackUp.map(i => renderItemCard(i, { dashboard:true, alert: staleDays(i) > 7 })).join("") : `<div class="empty">Nothing waiting to pick back up.</div>`,
+          "amber"
+        ),
+        sectionCardHtml(
+          "Saved reminders",
+          "Recent Don’t Forget notes",
+          recentDontForget.length ? recentDontForget.map(i => renderItemCard(i, { dashboard:true })).join("") : `<div class="empty">No reminders saved yet.</div>`,
+          "lavender"
+        )
+      ];
+
+      document.getElementById("homeDashboard").innerHTML = `<div class="dashboard-grid">${cards.join("")}</div>`;
+    }
+
+    function renderTasks(){
+      renderTaskFilters();
+      const taskList = sortByPriorityThenDate(items.filter(taskMatchesFilters).filter(i => i.type === "task"));
+      document.getElementById("taskList").innerHTML = taskList.length ? taskList.map(i => renderItemCard(i)).join("") : `<div class="empty">No tasks match those filters.</div>`;
+    }
+
+    function renderWork(){
+      const list = sortByPriorityThenDate(workItems.filter(i => i.status !== "done"));
+      document.getElementById("workList").innerHTML = list.length ? list.map(i => renderWorkCard(i)).join("") : `<div class="empty">No work items yet.</div>`;
+    }
+
+    function renderPayments(){
+      const currentMonthOccs = getCurrentMonthPaymentOccurrences();
+      const current = new Date();
+      document.getElementById("currentMonthPaymentHeading").textContent = `Current month payments · ${current.toLocaleDateString(undefined,{ month:"long", year:"2-digit" })}`;
+      document.getElementById("currentMonthPaymentSubtext").textContent = `Current month only. Sorted by ${paymentSortLabel(currentPaymentSortMode).toLowerCase()}.`;
+      document.getElementById("paymentSortToggleBtn").textContent = `Sort: ${paymentSortLabel(currentPaymentSortMode)}`;
+      document.getElementById("currentMonthPaymentList").innerHTML = currentMonthOccs.length ? currentMonthOccs.map(o => renderPaymentOccurrenceCard(o)).join("") : `<div class="empty">No payments for this month.</div>`;
+      document.getElementById("currentMonthPaymentTotal").textContent = currentMonthPaymentTotal();
+
+      const setups = sortPayments(payments);
+      document.getElementById("paymentSetupList").innerHTML = setups.length ? setups.map(p => renderPaymentTemplateCard(p)).join("") : `<div class="empty">No saved payment setups yet.</div>`;
+
+      const trackOccs = getRecurringTrackOccurrences();
+      document.getElementById("paymentTrackHeading").textContent = `Recurring month track · ${monthLabelFromDate(paymentTrackMonthDate)}`;
+      document.getElementById("paymentTrackSubtext").textContent = `${trackOccs.filter(occ => occ.status !== "paid").length} left to check off`;
+      document.getElementById("paymentTrackTotalBox").textContent = recurringTrackTotal();
+      document.getElementById("paymentTrackRemainingBox").textContent = `${recurringTrackRemainingTotal()} left`;
+      document.getElementById("paymentTrackList").innerHTML = trackOccs.length
+        ? trackOccs.map(o => renderPaymentOccurrenceCard(o)).join("")
+        : `<div class="empty">No active recurring payments for this month.</div>`;
+
+      const history = getPaidHistoryByPayment();
+      document.getElementById("paymentHistoryList").innerHTML = history.length
+        ? history.map(group => `
+            <div class="panel">
+              <div class="panel-title">
+                <h3>${escapeHtml(group.payment.name)}</h3>
+                <span class="muted">${escapeHtml(displayCurrency(group.payment.amount))}</span>
+              </div>
+              ${group.rows.map(row => `
+                <div class="history-row">
+                  <strong>✓ ${escapeHtml(row.yearMonth)}</strong>
+                  <div class="muted">Paid ${escapeHtml(formatStamp(row.paidAt))}</div>
+                </div>
+              `).join("")}
+            </div>
+          `).join("")
+        : `<div class="empty">No paid history yet.</div>`;
+    }
+
+    function renderCompleted(){
+      const personalDone = sortItems(items.filter(i => i.type === "task" && i.status === "done" && i.category === "Personal"));
+      const healthDone = sortItems(items.filter(i => i.type === "task" && i.status === "done" && i.category === "Health"));
+      const workDone = sortItems(workItems.filter(i => i.status === "done"));
+
+      const paidOccurrences = [];
+      for(let mOffset = -2; mOffset <= 2; mOffset++){
+        const d = new Date();
+        d.setMonth(d.getMonth() + mOffset);
+        paidOccurrences.push(...getPaymentOccurrencesForMonth(d.getFullYear(), d.getMonth()).filter(o => o.status === "paid"));
+      }
+      paidOccurrences.sort((a,b) => b.date.localeCompare(a.date));
+
+      const cards = [
+        sectionCardHtml("Completed Personal","Tasks finished", personalDone.length ? personalDone.map(i => renderItemCard(i, { dashboard:true })).join("") : `<div class="empty">No completed personal tasks.</div>`,"blue"),
+        sectionCardHtml("Completed Health","Appointments and health tasks", healthDone.length ? healthDone.map(i => renderItemCard(i, { dashboard:true })).join("") : `<div class="empty">No completed health tasks.</div>`,"rose"),
+        sectionCardHtml("Completed Work","Finished work items", workDone.length ? workDone.map(i => renderWorkCard(i, { dashboard:true })).join("") : `<div class="empty">No completed work items.</div>`,"amber"),
+        sectionCardHtml("Completed Payments","Paid payment occurrences", paidOccurrences.length ? paidOccurrences.map(o => renderPaymentOccurrenceCard(o, { dashboard:true })).join("") : `<div class="empty">No completed payments.</div>`,"green")
+      ];
+
+      document.getElementById("completedPanels").innerHTML = `<div class="dashboard-grid">${cards.join("")}</div>`;
+    }
+
+    function renderDragReminderPanel(){
+      const unscheduled = sortItems(items.filter(i => i.type === "dontForget" && !i.date));
+      document.getElementById("unscheduledCount").textContent = `${unscheduled.length} waiting`;
+      document.getElementById("dragReminderList").innerHTML = unscheduled.length
+        ? unscheduled.map(item => `
+            <div class="drag-item" draggable="true" ondragstart="handleDragStart(event, ${item.id})">
+              <div class="drag-item-title">${escapeHtml(item.title || "(No title)")}</div>
+              <div class="drag-item-note">${escapeHtml((item.note || "").slice(0,120))}</div>
+            </div>
+          `).join("")
+        : `<div class="empty">No unscheduled reminders.</div>`;
+    }
+
+    function changeMonth(delta){
+      calendarViewDate = new Date(calendarViewDate.getFullYear(), calendarViewDate.getMonth() + delta, 1);
+      expandedDate = "";
+      renderCalendar();
+    }
+
+    function goToCurrentMonth(){
+      calendarViewDate = new Date();
+      selectedDate = todayString();
+      expandedDate = "";
+      renderCalendar();
+    }
+
+    function selectDate(dateStr){
+      const wasSelected = selectedDate === dateStr;
+      selectedDate = dateStr;
+      renderCalendar();
+      renderSelectedDayDetails();
+      if(wasSelected) openDayModal();
+    }
+
+    function toggleExpandDate(dateStr, event){
+      if(event) event.stopPropagation();
+      expandedDate = expandedDate === dateStr ? "" : dateStr;
+      renderCalendar();
+    }
+
+    function getMergedItemsForDate(dateStr){
+      const regular = items.filter(i => i.date === dateStr).map(i => ({ kind:"item", ...i }));
+      const work = workItems.filter(i => i.date === dateStr).map(i => ({ kind:"work", ...i }));
+      const paymentsForDay = getPaymentOccurrencesForDate(dateStr);
+      return [...regular, ...work, ...paymentsForDay].sort((a,b) => {
+        const aDate = a.date || "";
+        const bDate = b.date || "";
+        if(aDate !== bDate) return aDate.localeCompare(bDate);
+        return new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0);
+      });
+    }
+
+    function renderCalendar(){
+      renderDragReminderPanel();
+      document.getElementById("calendarWeekdays").innerHTML = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(d => `<div class="weekday">${d}</div>`).join("");
+
+      const year = calendarViewDate.getFullYear();
+      const month = calendarViewDate.getMonth();
+      const firstOfMonth = new Date(year, month, 1);
+      const lastOfMonth = new Date(year, month + 1, 0);
+      const startDay = firstOfMonth.getDay();
+      const daysInMonth = lastOfMonth.getDate();
+      const prevMonthLast = new Date(year, month, 0).getDate();
+
+      const cells = [];
+      for(let i = 0; i < startDay; i++){
+        cells.push(buildCalendarCell(new Date(year, month - 1, prevMonthLast - startDay + 1 + i), true, Math.floor(cells.length / 7)));
+      }
+      for(let day = 1; day <= daysInMonth; day++){
+        cells.push(buildCalendarCell(new Date(year, month, day), false, Math.floor(cells.length / 7)));
+      }
+      while(cells.length % 7 !== 0){
+        const nextDay = cells.length - (startDay + daysInMonth) + 1;
+        cells.push(buildCalendarCell(new Date(year, month + 1, nextDay), true, Math.floor(cells.length / 7)));
+      }
+
+      document.getElementById("calendarGrid").innerHTML = cells.join("");
+      document.getElementById("calendarMonthLabel").textContent = calendarViewDate.toLocaleDateString(undefined,{ month:"long", year:"2-digit" });
+      renderSelectedDayDetails();
+    }
+
+    function buildCalendarCell(dateObj, isOtherMonth, weekIndex){
+      const ymd = formatDateYMD(dateObj);
+      const dayItems = getMergedItemsForDate(ymd);
+      const isToday = ymd === todayString();
+      const isSelected = ymd === selectedDate;
+      const isAltWeek = weekIndex % 2 === 1;
+      const isExpanded = expandedDate === ymd;
+      const shownItems = isExpanded ? dayItems : dayItems.slice(0,2);
+
+      const preview = shownItems.map(item => {
+        let cssType = "task";
+        let label = item.title || "(No title)";
+        if(item.kind === "paymentOccurrence"){
+          cssType = item.status === "paid" ? "payment done" : "payment";
+          label = item.status === "paid" ? `✓ ${item.title}` : `💳 ${item.title}`;
+        } else if(item.kind === "work"){
+          cssType = item.status === "done" ? "work done" : "work";
+        } else if(item.type === "dontForget"){
+          cssType = "reminder";
+        } else if(item.status === "done"){
+          cssType = "done";
+        }
+        const paidHtml = item.kind === "paymentOccurrence" && item.status === "paid"
+          ? `<span class="paid-payment-text">${escapeHtml(label)}</span>`
+          : escapeHtml(label);
+        return `<div class="day-pill ${cssType}">${paidHtml}</div>`;
+      }).join("");
+
+      const expandLink = dayItems.length > 2 ? `<div class="calendar-expand-link" onclick="toggleExpandDate('${ymd}', event)">${isExpanded ? "Show less" : `Show all (${dayItems.length})`}</div>` : "";
+
+      return `
+        <div
+          class="calendar-cell ${isAltWeek ? "week-alt" : ""} ${isOtherMonth ? "other-month" : ""} ${isToday ? "today" : ""} ${isSelected ? "selected" : ""} ${isExpanded ? "expanded" : ""}"
+          data-date="${ymd}"
+          onclick="selectDate('${ymd}')"
+          ondragover="allowDrop(event, '${ymd}')"
+          ondragleave="dragLeaveDay('${ymd}')"
+          ondrop="dropOnDate(event, '${ymd}')"
+        >
+          <div class="day-num">${dateObj.getDate()}</div>
+          <div class="day-items">${preview}</div>
+          ${expandLink}
+          <div class="day-count">${dayItems.length ? `${dayItems.length} item${dayItems.length > 1 ? "s" : ""}` : ""}</div>
+        </div>
+      `;
+    }
+
+    function renderSelectedDayDetails(){
+      const label = parseYMD(selectedDate).toLocaleDateString(undefined,{ weekday:"long", month:"long", day:"numeric", year:"2-digit" });
+      document.getElementById("selectedDateLabel").textContent = label;
+
+      const regularItems = sortByPriorityThenDate(items.filter(i => i.date === selectedDate));
+      const work = sortByPriorityThenDate(workItems.filter(i => i.date === selectedDate));
+      const paymentOccs = getPaymentOccurrencesForDate(selectedDate);
+
+      let html = "";
+      html += regularItems.map(i => renderItemCard(i)).join("");
+      html += work.map(i => renderWorkCard(i)).join("");
+      html += paymentOccs.map(o => renderPaymentOccurrenceCard(o)).join("");
+      if(!html) html = `<div class="empty">Nothing on this day yet.</div>`;
+      document.getElementById("selectedDayItems").innerHTML = html;
+
+      const unscheduledReminders = sortItems(items.filter(i => i.type === "dontForget" && !i.date));
+      document.getElementById("assignableDontForgetList").innerHTML = unscheduledReminders.length
+        ? unscheduledReminders.map(i => renderAssignableReminderRow(i, selectedDate)).join("")
+        : `<div class="empty">No unscheduled reminders waiting to be placed.</div>`;
+    }
+
+    function openDayModal(){
+      document.getElementById("dayModalBackdrop").classList.add("open");
+      renderDayModal();
+    }
+
+    function closeDayModal(event){
+      if(event && event.target !== document.getElementById("dayModalBackdrop")) return;
+      document.getElementById("dayModalBackdrop").classList.remove("open");
+    }
+
+    function renderDayModal(){
+      document.getElementById("dayModalTitle").textContent = parseYMD(selectedDate).toLocaleDateString(undefined,{ weekday:"long", month:"long", day:"numeric", year:"2-digit" });
+
+      const regularItems = sortByPriorityThenDate(items.filter(i => i.date === selectedDate));
+      const work = sortByPriorityThenDate(workItems.filter(i => i.date === selectedDate));
+      const paymentOccs = getPaymentOccurrencesForDate(selectedDate);
+
+      let html = "";
+      html += regularItems.map(i => renderItemCard(i)).join("");
+      html += work.map(i => renderWorkCard(i)).join("");
+      html += paymentOccs.map(o => renderPaymentOccurrenceCard(o)).join("");
+      if(!html) html = `<div class="empty">Nothing on this day yet.</div>`;
+      document.getElementById("modalDayItems").innerHTML = html;
+
+      const unscheduledReminders = sortItems(items.filter(i => i.type === "dontForget" && !i.date));
+      document.getElementById("modalAssignableReminders").innerHTML = unscheduledReminders.length
+        ? unscheduledReminders.map(i => renderAssignableReminderRow(i, selectedDate)).join("")
+        : `<div class="empty">No unscheduled reminders waiting to be placed.</div>`;
+    }
+
+    function renderSearch(){
+      const q = document.getElementById("searchInput").value.trim().toLowerCase();
+      const resultsBox = document.getElementById("searchResults");
+      if(!q){ resultsBox.innerHTML = `<div class="empty">Type something to search.</div>`; return; }
+
+      const itemResults = sortItems(items.filter(item => [item.title,item.note,item.category,item.status,item.type,item.date,item.priority].join(" ").toLowerCase().includes(q)));
+      const workResults = sortItems(workItems.filter(item => [item.title,item.note,item.label,item.status,item.date,item.priority,item.startTime].join(" ").toLowerCase().includes(q)));
+      const paymentResults = sortPayments(payments.filter(p => [p.name,p.amount,p.paymentType,p.notes,p.dueDay,p.specificDate,p.isRecurringMonthly ? "recurring monthly":"one-time",p.isActive ? "active":"paused"].join(" ").toLowerCase().includes(q)));
+
+      let html = "";
+      if(itemResults.length){
+        html += `<div class="panel-title"><h3>Tasks / Reminders</h3></div>`;
+        html += itemResults.map(i => renderItemCard(i)).join("");
+      }
+      if(workResults.length){
+        html += `<div class="panel-title"><h3>Work</h3></div>`;
+        html += workResults.map(i => renderWorkCard(i)).join("");
+      }
+      if(paymentResults.length){
+        html += `<div class="panel-title"><h3>Payments</h3></div>`;
+        html += paymentResults.map(p => renderPaymentTemplateCard(p)).join("");
+      }
+
+      resultsBox.innerHTML = html || `<div class="empty">No matches found.</div>`;
+    }
+
+    function renderReview(){}
+
+    function downloadBackup(){
+      const bundle = { items, workItems, payments, paymentOccurrences, themeMode };
+      const blob = new Blob([JSON.stringify(bundle, null, 2)], {type:"application/json"});
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `daily-memory-support-backup-${todayString()}.json`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function downloadReadableCopy(){
+      const lines = [];
+      lines.push("Daily Memory Support");
+      lines.push(`Exported: ${new Date().toLocaleString()}`);
+      lines.push("");
+
+      lines.push("TASKS / REMINDERS");
+      sortItems(items).forEach(i => {
+        lines.push(`${i.title} | ${i.category || ""} | ${i.priority || ""} | ${i.date || ""}`);
+        if(i.note) lines.push(i.note);
+        lines.push("");
+      });
+
+      lines.push("WORK");
+      sortItems(workItems).forEach(i => {
+        lines.push(`${i.title} | ${i.label || ""} | ${i.priority || ""} | ${i.date || ""} ${i.startTime || ""}`);
+        if(i.note) lines.push(i.note);
+        lines.push("");
+      });
+
+      lines.push("PAYMENTS");
+      sortPayments(payments).forEach(p => {
+        lines.push(`${p.name} | ${displayCurrency(p.amount)} | ${p.paymentType} | ${p.isRecurringMonthly ? "monthly":"one-time"}`);
+        if(p.notes) lines.push(p.notes);
+        lines.push("");
+      });
+
+      const blob = new Blob([lines.join("\n")], {type:"text/plain"});
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `daily-memory-support-readable-${todayString()}.txt`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+
+    async function shareBackup(){
+      const bundle = { items, workItems, payments, paymentOccurrences, themeMode };
+      const backupName = `daily-memory-support-backup-${todayString()}.json`;
+      const jsonText = JSON.stringify(bundle, null, 2);
+      const file = new File([jsonText], backupName, { type:"application/json" });
+
+      try{
+        if(navigator.canShare && navigator.canShare({ files:[file] })){
+          await navigator.share({
+            title: "Daily Memory Support Backup",
+            text: "Backup file",
+            files: [file]
+          });
+          return;
+        }
+      }catch(error){
+        if(error && error.name === "AbortError") return;
+      }
+
+      try{
+        if(navigator.clipboard && window.isSecureContext){
+          await navigator.clipboard.writeText(jsonText);
+          alert("Sharing is not available on this device/browser. The backup JSON was copied to your clipboard instead. Paste it into a note or file and save it.");
+          return;
+        }
+      }catch(error){
+      }
+
+      downloadBackup();
+      alert("Sharing is not available on this device/browser, so the backup file was downloaded instead.");
+    }
+
+    function restoreBackup(event){
+      const file = event.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e){
+        try{
+          const imported = JSON.parse(e.target.result);
+          if(!confirm("Restore this backup and replace current data?")) return;
+
+          items = Array.isArray(imported.items) ? imported.items : [];
+          workItems = Array.isArray(imported.workItems) ? imported.workItems : [];
+          payments = Array.isArray(imported.payments) ? imported.payments : [];
+          paymentOccurrences = imported.paymentOccurrences && typeof imported.paymentOccurrences === "object" ? imported.paymentOccurrences : {};
+          themeMode = imported.themeMode || "dark";
+
+          applyTheme();
+          persistAll();
+          renderAll();
+          renderDayModal();
+          alert("Backup restored.");
+        }catch{
+          alert("That backup file could not be restored.");
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = "";
+    }
+
+    function startVoiceCaptureForField(fieldId, appendMode, context){
+      const statusEl = document.getElementById(context === "task" ? "taskVoiceStatus" : "homeVoiceStatus");
+      const field = document.getElementById(fieldId);
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      if(!SpeechRecognition){
+        if(statusEl) statusEl.textContent = "Voice capture is not supported in this browser.";
+        return;
+      }
+
+      const recognition = new SpeechRecognition();
+      recognition.lang = "en-US";
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      if(statusEl) statusEl.textContent = "Listening...";
+
+      recognition.onresult = function(event){
+        const transcript = event.results[0][0].transcript.trim();
+        field.value = appendMode && field.value.trim() ? field.value.trim() + "\n" + transcript : transcript;
+        if(statusEl) statusEl.textContent = "Voice added.";
+      };
+
+      recognition.onerror = function(){
+        if(statusEl) statusEl.textContent = "Voice capture did not work this time.";
+      };
+
+      recognition.start();
+    }
+
+    function toggleQuickDayCategory(){
+      const type = document.getElementById("quickDayEntryType").value;
+      document.getElementById("quickDayCategoryWrap").style.display = type === "task" ? "block" : "none";
+      document.getElementById("quickDayStatusWrap").style.display = type === "task" ? "block" : "none";
+    }
+
+    function toggleModalDayFields(){
+      const type = document.getElementById("modalEntryType").value;
+      document.getElementById("modalCategoryWrap").style.display = type === "task" ? "block" : "none";
+      document.getElementById("modalStatusWrap").style.display = type === "task" ? "block" : "none";
+    }
+
+    function addEntryToSelectedDate(){
+      const text = document.getElementById("quickDayEntryText").value.trim();
+      const type = document.getElementById("quickDayEntryType").value;
+      const category = document.getElementById("quickDayTaskCategory").value;
+      const status = document.getElementById("quickDayTaskStatus").value;
+      if(!text){ alert("Add some text first."); return; }
+
+      const split = thoughtToTitleAndNote(text);
+      items.unshift({
+        id: Date.now(),
+        type: type === "task" ? "task" : "dontForget",
+        title: split.title,
+        note: text,
+        category: type === "task" ? category : "",
+        status: type === "task" ? status : "later",
+        priority: "none",
+        date: selectedDate,
+        pinned:false,
+        createdAt:nowStamp(),
+        updatedAt:nowStamp(),
+        doneAt:null
+      });
+
+      document.getElementById("quickDayEntryText").value = "";
+      persistAll();
+      renderAll();
+    }
+
+    function addEntryFromDayModal(){
+      const text = document.getElementById("modalEntryText").value.trim();
+      const type = document.getElementById("modalEntryType").value;
+      const category = document.getElementById("modalTaskCategory").value;
+      const status = document.getElementById("modalTaskStatus").value;
+      if(!text){ alert("Add some text first."); return; }
+
+      const split = thoughtToTitleAndNote(text);
+      items.unshift({
+        id: Date.now(),
+        type: type === "task" ? "task" : "dontForget",
+        title: split.title,
+        note: text,
+        category: type === "task" ? category : "",
+        status: type === "task" ? status : "later",
+        priority: "none",
+        date: selectedDate,
+        pinned:false,
+        createdAt:nowStamp(),
+        updatedAt:nowStamp(),
+        doneAt:null
+      });
+
+      document.getElementById("modalEntryText").value = "";
+      persistAll();
+      renderAll();
+      renderDayModal();
+    }
+
+    function renderScreen(screenId){
+      if(screenId === "home") renderHome();
+      if(screenId === "calendar") renderCalendar();
+      if(screenId === "payments") renderPayments();
+      if(screenId === "tasks") renderTasks();
+      if(screenId === "work") renderWork();
+      if(screenId === "completed") renderCompleted();
+      if(screenId === "search") renderSearch();
+      if(screenId === "review") renderReview();
+    }
+
+    function renderAll(){
+      renderHome();
+      const activeScreen = document.querySelector(".screen.active")?.id || "home";
+      if(activeScreen !== "home") renderScreen(activeScreen);
+      if(document.getElementById("dayModalBackdrop").classList.contains("open")) renderDayModal();
+    }
+
+    applyTheme();
+    populateDueDayOptions();
+    toggleQuickDayCategory();
+    toggleModalDayFields();
+    togglePaymentDateInputs();
+    renderAll();
+  </script>
+</body>
+</html>
