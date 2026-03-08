@@ -966,7 +966,7 @@
     .drawer{width:min(360px,100%);height:calc(100vh - 40px);border-radius:20px 0 0 20px;box-shadow:0 6px 18px rgba(24,38,30,.08)}
     .chip.status-overdue{background:var(--danger);color:#fff;border-color:var(--danger)}
     .chip.status-due-soon{background:var(--warning-soft);color:var(--warn);border-color:transparent}
-    .selected-summary-card,.agenda-mobile-card,.quick-add-mobile-card,.compact-month-card,.mobile-unscheduled-card{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:16px}
+    .selected-summary-card,.agenda-mobile-card,.quick-add-mobile-card,.compact-month-card,.mobile-unscheduled-card{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:14px}
     .selected-summary-top,.selected-summary-bottom,.mobile-month-nav{display:flex;justify-content:space-between;align-items:center;gap:8px}
     .mobile-month-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
     .mobile-month-title{font-size:36px;line-height:40px;font-weight:700}
@@ -984,10 +984,15 @@
     .mobile-dot.work{background:var(--workMarker)}
     .mobile-dot.done{background:var(--doneMarker)}
     .agenda-mobile-list,.mobile-unscheduled-list{display:grid;gap:10px;margin-top:12px}
+    .mobile-collapsible summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:700}
+    .mobile-collapsible summary::-webkit-details-marker{display:none}
+    .mobile-collapsible .summary-meta{font-size:13px;color:var(--muted);font-weight:500}
+    .mobile-collapsible .summary-chevron{font-size:18px;line-height:1;transition:transform .15s ease;color:var(--muted)}
+    .mobile-collapsible[open] .summary-chevron{transform:rotate(180deg)}
     .agenda-mobile-item,.mobile-unscheduled-item{background:var(--panel3);border:1px solid var(--border);border-radius:14px;padding:12px}
     @media (max-width: 1024px){
       .calendar-v82{display:none}
-      .calendar-mobile{display:grid;gap:16px}
+      .calendar-mobile{display:grid;gap:12px}
       .payments-summary-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
       .payments-v82-grid{grid-template-columns:1fr}
       .payments-v82-grid > .panel:nth-child(3){display:none}
@@ -1101,14 +1106,14 @@
       <div class="calendar-mobile">
         <div class="mobile-month-header"><div class="mobile-month-title" id="mobileCalendarMonthTitle">Month</div><button class="btn soft" onclick="goToCurrentMonth()">Today</button></div>
         <div class="mobile-month-nav"><button class="btn soft" onclick="changeMonth(-1)">‹</button><div class="mobile-month-pill" id="mobileCalendarMonthPill">Month</div><button class="btn soft" onclick="changeMonth(1)">›</button></div>
+        <div class="compact-month-card"><div class="panel-title"><h3>Month grid</h3><span class="muted">Tap a date to focus it</span></div><div class="calendar-grid" id="mobileCalendarWeekdays"></div><div id="mobileCalendarGrid" class="mobile-calendar-grid"></div></div>
         <div class="selected-summary-card">
           <div class="selected-summary-top"><div><h3 id="mobileSelectedDateLabel">Selected day</h3></div><span class="badge" id="mobileSelectedCountBadge">0 items</span></div>
           <div class="selected-summary-bottom" style="margin-top:12px;"><div class="muted" id="mobileSelectedNextItem">Nothing scheduled</div><div class="row"><button class="btn small primary" onclick="openDayModal()">Open Day</button></div></div>
         </div>
-        <div class="agenda-mobile-card"><div class="panel-title"><h3>Agenda</h3><span class="muted">Selected day first</span></div><div id="mobileAgendaList" class="agenda-mobile-list"></div></div>
-        <div class="quick-add-mobile-card"><div class="panel-title"><h3>Quick add</h3><span class="muted">Add directly to selected day</span></div><div class="grid"><textarea id="mobileQuickDayEntryText" placeholder="Add what should happen on this day..."></textarea><div class="row"><select id="mobileQuickDayEntryType" onchange="toggleMobileQuickDayCategory()"><option value="dontForget">Reminder</option><option value="task">Task</option></select><div id="mobileQuickDayCategoryWrap" style="display:none;flex:1;"><select id="mobileQuickDayTaskCategory"><option value="Personal">Personal</option><option value="Work">Work</option><option value="Health">Health</option></select></div><button class="btn primary" onclick="addEntryToSelectedDateFromMobile()">Save</button></div><div id="mobileQuickDayStatusWrap" style="display:none;"><select id="mobileQuickDayTaskStatus"><option value="now">Now</option><option value="later">Later</option><option value="waiting">Waiting On</option></select></div></div></div>
-        <div class="compact-month-card"><div class="panel-title"><h3>Month</h3><span class="muted">Selector, not hero</span></div><div class="calendar-grid" id="mobileCalendarWeekdays"></div><div id="mobileCalendarGrid" class="mobile-calendar-grid"></div></div>
-        <div class="mobile-unscheduled-card" id="mobileUnscheduledWrap"><div class="panel-title"><h3>Unscheduled reminders</h3><span class="muted" id="mobileUnscheduledCount">0</span></div><div id="mobileUnscheduledList" class="mobile-unscheduled-list"></div></div>
+        <details class="agenda-mobile-card mobile-collapsible" open><summary><span>Agenda</span><span class="summary-meta">Selected day first</span><span class="summary-chevron">⌄</span></summary><div id="mobileAgendaList" class="agenda-mobile-list"></div></details>
+        <details class="quick-add-mobile-card mobile-collapsible"><summary><span>Quick add</span><span class="summary-meta">Add directly to selected day</span><span class="summary-chevron">⌄</span></summary><div class="grid" style="margin-top:12px;"><textarea id="mobileQuickDayEntryText" placeholder="Add what should happen on this day..."></textarea><div class="row"><select id="mobileQuickDayEntryType" onchange="toggleMobileQuickDayCategory()"><option value="dontForget">Reminder</option><option value="task">Task</option></select><div id="mobileQuickDayCategoryWrap" style="display:none;flex:1;"><select id="mobileQuickDayTaskCategory"><option value="Personal">Personal</option><option value="Work">Work</option><option value="Health">Health</option></select></div><button class="btn primary" onclick="addEntryToSelectedDateFromMobile()">Save</button></div><div id="mobileQuickDayStatusWrap" style="display:none;"><select id="mobileQuickDayTaskStatus"><option value="now">Now</option><option value="later">Later</option><option value="waiting">Waiting On</option></select></div></div></details>
+        <details class="mobile-unscheduled-card mobile-collapsible" id="mobileUnscheduledWrap"><summary><span>Unscheduled reminders</span><span class="summary-meta" id="mobileUnscheduledCount">0</span><span class="summary-chevron">⌄</span></summary><div id="mobileUnscheduledList" class="mobile-unscheduled-list"></div></details>
       </div>
     </section>
 
@@ -1615,7 +1620,7 @@
       const order = ["soonest","latest","price"];
       const nextIndex = (order.indexOf(currentPaymentSortMode) + 1) % order.length;
       currentPaymentSortMode = order[nextIndex];
-      renderPayments();
+      try { renderPayments(); } catch(error) { console.error("Payment tab render error:", error); }
     }
 
     function statusLabel(status){
@@ -1680,7 +1685,7 @@
       if(event) event.target.classList.add("active");
       else document.querySelector(`.subtab[data-payment-subtab="${tab}"]`)?.classList.add("active");
 
-      renderPayments();
+      try { renderPayments(); } catch(error) { console.error("Payment tab render error:", error); }
     }
 
     function clearDontForgetForm(){
@@ -2452,12 +2457,12 @@
 
     function changePaymentTrackMonth(delta){
       paymentTrackMonthDate = new Date(paymentTrackMonthDate.getFullYear(), paymentTrackMonthDate.getMonth() + delta, 1);
-      renderPayments();
+      try { renderPayments(); } catch(error) { console.error("Payment tab render error:", error); }
     }
 
     function resetPaymentTrackMonth(){
       paymentTrackMonthDate = new Date();
-      renderPayments();
+      try { renderPayments(); } catch(error) { console.error("Payment tab render error:", error); }
     }
 
     function recurringTrackTotal(){
@@ -2540,12 +2545,19 @@
       document.getElementById("paymentSortToggleBtn").textContent = `Sort: ${paymentSortLabel(currentPaymentSortMode)}`;
       document.getElementById("currentMonthPaymentList").innerHTML = currentMonthOccs.length ? currentMonthOccs.map(o => renderPaymentOccurrenceCard(o)).join("") : `<div class="empty">No payments for this month.</div>`;
       document.getElementById("currentMonthPaymentTotal").textContent = currentMonthPaymentTotal();
-      document.getElementById("currentMonthUnpaidTotal").textContent = `$${currentMonthOccs.filter(o => o.status !== "paid").reduce((sum,o) => sum + parseCurrencyToNumber(o.amount),0).toFixed(2)}`;
+      document.getElementById("paidThisMonthTotal").textContent = `$${currentMonthOccs.filter(o => o.status === "paid").reduce((sum,o) => sum + parseCurrencyToNumber(o.amount),0).toFixed(2)}`;
+      const overdueTotal = currentMonthOccs.filter(o => o.status !== "paid" && o.date < todayString()).reduce((sum,o) => sum + parseCurrencyToNumber(o.amount),0);
+      const next7Cutoff = new Date();
+      next7Cutoff.setDate(next7Cutoff.getDate() + 7);
+      const next7CutoffStr = formatDateYMD(next7Cutoff);
+      const next7Total = currentMonthOccs.filter(o => o.status !== "paid" && o.date >= todayString() && o.date <= next7CutoffStr).reduce((sum,o) => sum + parseCurrencyToNumber(o.amount),0);
+      document.getElementById("currentMonthOverdueTotal").textContent = `$${overdueTotal.toFixed(2)}`;
+      document.getElementById("next7DaysPaymentTotal").textContent = `$${next7Total.toFixed(2)}`;
       const setups = sortPayments(payments);
       document.getElementById("savedPaymentSetupCount").textContent = String(setups.length);
       document.getElementById("paymentSetupList").innerHTML = setups.length ? setups.map(p => renderPaymentTemplateCard(p)).join("") : `<div class="empty">No saved payment setups yet.</div>`;
       const trackOccs = getRecurringTrackOccurrences();
-      document.getElementById("paymentTrackHeading").textContent = `Recurring month track · ${monthLabelFromDate(paymentTrackDate)}`;
+      document.getElementById("paymentTrackHeading").textContent = `Recurring month track · ${monthLabelFromDate(paymentTrackMonthDate)}`;
       document.getElementById("paymentTrackSubtext").textContent = `${trackOccs.length} recurring payment${trackOccs.length === 1 ? "" : "s"} in this month.`;
       document.getElementById("paymentTrackList").innerHTML = trackOccs.length ? trackOccs.map(o => renderPaymentOccurrenceCard(o)).join("") : `<div class="empty">No recurring payments in this month.</div>`;
       document.getElementById("paymentTrackTotalBox").textContent = `$${trackOccs.reduce((sum,o) => sum + parseCurrencyToNumber(o.amount), 0).toFixed(2)}`;
@@ -2713,7 +2725,7 @@
       html += paymentOccs.map(o => `<div class="agenda-mobile-item">${renderPaymentOccurrenceCard(o)}</div>`).join('');
       document.getElementById('mobileAgendaList').innerHTML = html || `<div class="empty">Nothing on this day yet.</div>`;
       const unscheduled = sortItems(items.filter(i => i.type === 'dontForget' && !i.date));
-      document.getElementById('mobileUnscheduledCount').textContent = `${unscheduled.length}`;
+      document.getElementById('mobileUnscheduledCount').textContent = `${unscheduled.length} waiting`;
       document.getElementById('mobileUnscheduledList').innerHTML = unscheduled.length ? unscheduled.slice(0,4).map(i => `<div class="mobile-unscheduled-item"><div class="drag-item-title">${escapeHtml(i.title || '(No title)')}</div><div class="drag-item-note">${escapeHtml((i.note||'').slice(0,80))}</div><div class="actions"><button class="btn small primary" onclick="assignItemToDate(${i.id}, '${selectedDate}')">Place on selected day</button></div></div>`).join('') : `<div class="empty">No unscheduled reminders.</div>`;
       document.getElementById('mobileUnscheduledWrap').style.display = unscheduled.length ? 'block' : 'none';
     }
@@ -2780,6 +2792,7 @@
       document.getElementById("calendarGrid").innerHTML = cells.join("");
       document.getElementById("calendarMonthLabel").textContent = calendarViewDate.toLocaleDateString(undefined,{ month:"long", year:"2-digit" });
       renderSelectedDayDetails();
+      renderMobileCalendar();
     }
 
     function buildCalendarCell(dateObj, isOtherMonth, weekIndex){
