@@ -891,6 +891,62 @@
         padding:4px 5px;
       }
     }
+  
+
+    /* v82 desktop wireframe alignment */
+    .topbar{min-height:72px;margin-bottom:16px}
+    .title-wrap h1{font-size:44px;line-height:1.15;margin-bottom:4px}
+    .app{max-width:1360px}
+    .tabs{margin-bottom:20px}
+    .tab{height:40px;padding:0 16px;border-radius:12px;display:inline-flex;align-items:center}
+    .panel{border-radius:20px;padding:20px;background:var(--panel)}
+    .list-item,.payment-card,.payment-occurrence,.history-row,.drag-item,.stat,.dashboard-item{border-radius:16px}
+    input, textarea, select{border-radius:12px;background:var(--panel3)}
+    .btn{height:40px;padding:0 16px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center}
+    .btn.small{height:36px;padding:0 12px;border-radius:12px}
+    .home-shell{display:grid;gap:24px}
+    .quick-capture-panel .capture-input-row{margin-top:12px}
+    .quick-capture-panel .big-thought-box{min-height:72px;max-height:120px}
+    .home-summary-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px}
+    .summary-card{background:var(--panel3);border:1px solid var(--border);border-radius:16px;padding:16px;min-height:92px;display:flex;flex-direction:column;justify-content:center}
+    .summary-card .num{font-size:30px;font-weight:700;line-height:1;margin-bottom:8px}
+    .home-main-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(320px,1fr);gap:24px;align-items:start}
+    .today-focus-panel .focus-zone + .focus-zone{margin-top:16px}
+    .home-stack{display:grid;gap:24px}
+    .mini-list{display:grid;gap:10px}
+    .mini-calendar-preview{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .mini-day{background:var(--panel3);border:1px solid var(--border);border-radius:16px;padding:14px}
+    .mini-day-label{font-weight:700;margin-bottom:6px}
+    .saved-reminders-panel .dashboard-card-body,.today-focus-panel .dashboard-card-body{max-height:none;overflow:visible}
+    .calendar-v82{display:grid;grid-template-columns:280px minmax(0,1fr) 360px;gap:24px;align-items:start}
+    .calendar-center .panel{margin-bottom:0}
+    .agenda-panel{position:sticky;top:16px}
+    .agenda-panel .panel{margin-bottom:0}
+    .agenda-section + .agenda-section{margin-top:16px}
+    .agenda-list{max-height:320px;overflow:auto;padding-right:4px}
+    .payments-summary-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:24px}
+    .metric-box{background:var(--panel3);border:1px solid var(--border);border-radius:16px;padding:16px}
+    .metric-box .metric-label{color:var(--muted);font-size:13px;margin-bottom:8px}
+    .metric-box .metric-value{font-size:28px;font-weight:700}
+    .payments-v82-grid{display:grid;grid-template-columns:280px minmax(0,1.2fr) minmax(320px,.9fr);gap:24px;align-items:start}
+    .filter-rail .filter-rail-stack{display:grid;gap:16px}
+    .drawer-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.42);display:none;align-items:stretch;justify-content:flex-end;z-index:10000}
+    .drawer-backdrop.open{display:flex}
+    .drawer{width:min(460px,100%);height:100%;overflow:auto;background:var(--panel);border-left:1px solid var(--border);box-shadow:0 6px 18px rgba(24,38,30,.08);padding:20px}
+    .drawer-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
+    .type-legend{display:grid;gap:8px}
+    .legend-row{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px}
+    .legend-swatch{width:12px;height:12px;border-radius:999px;display:inline-block}
+    @media (max-width:1180px){
+      .calendar-v82,.payments-v82-grid,.home-main-grid{grid-template-columns:1fr}
+      .agenda-panel{position:static}
+      .home-summary-row,.payments-summary-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media (max-width:760px){
+      .home-summary-row,.payments-summary-strip{grid-template-columns:1fr}
+      .mini-calendar-preview{grid-template-columns:1fr}
+    }
+
   </style>
 </head>
 <body>
@@ -917,136 +973,79 @@
     </div>
 
     <section id="home" class="screen active">
-      <div class="panel">
-        <div class="panel-title">
-          <h2>Don’t Forget right now</h2>
-          <span class="muted">Capture first. Sort later.</span>
-        </div>
-        <div class="grid">
-          <div>
-            <label for="dfThought">What’s on your mind?</label>
+      <div class="home-shell">
+        <div class="panel quick-capture-panel">
+          <div class="panel-title">
+            <h2>Capture now</h2>
+            <span class="muted">Rapid capture first. Sort after.</span>
+          </div>
+          <div class="capture-input-row">
             <textarea id="dfThought" class="big-thought-box" placeholder="Type anything you don’t want to lose..."></textarea>
             <div class="field-actions">
-              <button class="btn soft small" onclick="startVoiceCaptureForField('dfThought', true, 'home')">Speak Thought</button>
+              <button class="btn soft small" onclick="startVoiceCaptureForField('dfThought', true, 'home')">Speak</button>
+              <button class="btn primary" onclick="saveDontForget()">Save reminder</button>
+              <button class="btn soft" onclick="clearDontForgetForm()">Clear</button>
+              <button class="btn soft" onclick="switchTab('tasks')">Add task</button>
+              <button class="btn soft" onclick="switchTab('calendar')">Add to calendar</button>
             </div>
+            <div id="homeVoiceStatus" class="helper"></div>
           </div>
-          <div class="row">
-            <button class="btn primary" onclick="saveDontForget()">Save Reminder</button>
-            <button class="btn soft" onclick="clearDontForgetForm()">Clear</button>
-            <button class="btn soft" onclick="switchTab('calendar')">Open Calendar</button>
+        </div>
+        <div class="home-summary-row">
+          <div class="summary-card"><div class="num" id="statOpen">0</div><div class="muted">Open tasks</div></div>
+          <div class="summary-card"><div class="num" id="statToday">0</div><div class="muted">For today</div></div>
+          <div class="summary-card"><div class="num" id="statDontForget">0</div><div class="muted">Saved reminders</div></div>
+          <div class="summary-card"><div class="num" id="statWaiting">0</div><div class="muted">Waiting on</div></div>
+        </div>
+        <div class="home-main-grid">
+          <div class="panel today-focus-panel">
+            <div class="panel-title"><h2>Today Focus</h2><span class="muted" id="homeDateLabel"></span></div>
+            <div class="focus-zone"><h3>Top 3 for today</h3><div id="homeTopThree" class="mini-list"></div></div>
+            <div class="focus-zone"><h3>Pick back up</h3><div id="homePickBackUp" class="mini-list"></div></div>
           </div>
-          <div id="homeVoiceStatus" class="helper"></div>
+          <div class="home-stack">
+            <div class="panel"><div class="panel-title"><h3>Due soon</h3><span class="muted">Payments and near-term pressure</span></div><div id="homeDueSoon" class="mini-list"></div></div>
+            <div class="panel"><div class="panel-title"><h3>Calendar preview</h3><span class="muted">Today and next two days</span></div><div id="homeCalendarPreview" class="mini-calendar-preview"></div></div>
+          </div>
         </div>
+        <div class="panel saved-reminders-panel"><div class="panel-title"><h2>Saved reminders</h2><span class="muted">Recent capture waiting to be placed or converted</span></div><div id="homeSavedReminders" class="mini-list"></div></div>
       </div>
-
-      <div class="panel">
-        <div class="panel-title">
-          <h2>Home</h2>
-          <div class="muted" id="homeDateLabel"></div>
-        </div>
-        <div class="stats">
-          <div class="stat"><div class="num" id="statOpen">0</div><div class="muted">Open tasks</div></div>
-          <div class="stat"><div class="num" id="statToday">0</div><div class="muted">For today</div></div>
-          <div class="stat"><div class="num" id="statDontForget">0</div><div class="muted">Saved reminders</div></div>
-          <div class="stat"><div class="num" id="statWaiting">0</div><div class="muted">Waiting on</div></div>
-        </div>
-      </div>
-
-      <div id="homeDashboard"></div>
     </section>
 
     <section id="calendar" class="screen">
-      <div class="calendar-layout">
+      <div class="calendar-v82">
         <div class="drag-panel">
-          <div class="panel-title">
-            <h3>Unscheduled reminders</h3>
-            <span class="muted" id="unscheduledCount">0</span>
-          </div>
-          <div class="helper" style="margin-bottom:10px;">Drag a reminder onto a day box. Use “Show all” on busy days. Click a selected day again to open the full day window.</div>
+          <div class="panel-title"><h3>Unscheduled reminders</h3><span class="muted" id="unscheduledCount">0</span></div>
+          <div class="helper" style="margin-bottom:10px;">Left rail for capture waiting to be scheduled. Drag onto a day or use the selected-day actions.</div>
           <div id="dragReminderList"></div>
         </div>
-
-        <div>
+        <div class="calendar-center">
           <div class="panel">
             <div class="panel-title">
-              <div>
-                <h2 id="calendarMonthLabel">Calendar</h2>
-                <div class="muted">Click once to select a day. Click the same day again to open the day window.</div>
-              </div>
-              <div class="row">
-                <button class="btn soft" onclick="changeMonth(-1)">Previous</button>
-                <button class="btn soft" onclick="goToCurrentMonth()">This Month</button>
-                <button class="btn soft" onclick="changeMonth(1)">Next</button>
-              </div>
+              <div><h2 id="calendarMonthLabel">Calendar</h2><div class="muted">Month grid in the center. Selected day details live in the agenda panel.</div></div>
+              <div class="row"><button class="btn soft" onclick="changeMonth(-1)">Previous</button><button class="btn soft" onclick="goToCurrentMonth()">This Month</button><button class="btn soft" onclick="changeMonth(1)">Next</button></div>
             </div>
             <div class="calendar-grid" id="calendarWeekdays"></div>
             <div class="calendar-grid" id="calendarGrid"></div>
           </div>
-
+        </div>
+        <div class="agenda-panel">
           <div class="panel">
-            <div class="panel-title">
-              <h3 id="selectedDateLabel">Selected day</h3>
-              <div class="row">
-                <span class="muted">View, add, and place things visually</span>
-                <button class="btn small soft" onclick="openDayModal()">Open Day Window</button>
+            <div class="panel-title"><h3 id="selectedDateLabel">Selected day</h3><span class="muted">Sticky agenda panel</span></div>
+            <div class="agenda-section"><h4>Agenda</h4><div id="selectedDayItems" class="agenda-list"></div></div>
+            <div class="agenda-section"><h4>Quick add</h4>
+              <div class="grid">
+                <div><label for="quickDayEntryText">Text / note</label><textarea id="quickDayEntryText" placeholder="Add what should happen on this day..."></textarea></div>
+                <div class="grid grid-2">
+                  <div><label for="quickDayEntryType">Type</label><select id="quickDayEntryType" onchange="toggleQuickDayCategory()"><option value="dontForget">Reminder</option><option value="task">Task</option></select></div>
+                  <div id="quickDayCategoryWrap" style="display:none;"><label for="quickDayTaskCategory">Category</label><select id="quickDayTaskCategory"><option value="Personal">Personal</option><option value="Work">Work</option><option value="Health">Health</option></select></div>
+                </div>
+                <div id="quickDayStatusWrap" style="display:none;"><label for="quickDayTaskStatus">Status</label><select id="quickDayTaskStatus"><option value="now">Now</option><option value="later">Later</option><option value="waiting">Waiting On</option></select></div>
+                <div class="row"><button class="btn primary" onclick="addEntryToSelectedDate()">Save to This Day</button></div>
               </div>
             </div>
-            <div class="day-detail-layout">
-              <div>
-                <h4>Items on this day</h4>
-                <div id="selectedDayItems"></div>
-              </div>
-              <div>
-                <div class="panel" style="margin-bottom:12px;">
-                  <div class="panel-title">
-                    <h4>Add directly to this day</h4>
-                    <span class="muted">Reminder or task</span>
-                  </div>
-                  <div class="grid">
-                    <div>
-                      <label for="quickDayEntryText">Text / note</label>
-                      <textarea id="quickDayEntryText" placeholder="Add what should happen on this day..."></textarea>
-                    </div>
-                    <div class="grid grid-2">
-                      <div>
-                        <label for="quickDayEntryType">Type</label>
-                        <select id="quickDayEntryType" onchange="toggleQuickDayCategory()">
-                          <option value="dontForget">Reminder</option>
-                          <option value="task">Task</option>
-                        </select>
-                      </div>
-                      <div id="quickDayCategoryWrap" style="display:none;">
-                        <label for="quickDayTaskCategory">Category</label>
-                        <select id="quickDayTaskCategory">
-                          <option value="Personal">Personal</option>
-                          <option value="Work">Work</option>
-                          <option value="Health">Health</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div id="quickDayStatusWrap" style="display:none;">
-                      <label for="quickDayTaskStatus">Status</label>
-                      <select id="quickDayTaskStatus">
-                        <option value="now">Now</option>
-                        <option value="later">Later</option>
-                        <option value="waiting">Waiting On</option>
-                      </select>
-                    </div>
-                    <div class="row">
-                      <button class="btn primary" onclick="addEntryToSelectedDate()">Save to This Day</button>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="panel" style="margin-bottom:0;">
-                  <div class="panel-title">
-                    <h4>Place unscheduled reminders on this day</h4>
-                    <span class="muted">One-click date assignment</span>
-                  </div>
-                  <div id="assignableDontForgetList"></div>
-                </div>
-              </div>
-            </div>
+            <div class="agenda-section"><h4>Conflict notes</h4><div id="calendarConflictNotes" class="helper">No conflicts detected.</div></div>
+            <div class="agenda-section"><h4>Place unscheduled reminders</h4><div id="assignableDontForgetList" class="agenda-list"></div></div>
           </div>
         </div>
       </div>
@@ -1058,138 +1057,42 @@
         <button class="subtab" data-payment-subtab="payments-month" onclick="switchPaymentSubtab('payments-month', event)">Month Track</button>
         <button class="subtab" data-payment-subtab="payments-history" onclick="switchPaymentSubtab('payments-history', event)">History</button>
       </div>
-
       <div id="payments-current" class="subscreen active">
-        <div class="two-col-layout">
-          <div class="panel">
-            <div class="panel-title">
-              <h2>Add / Edit Payment</h2>
-              <span class="muted">Bills, cards, subscriptions, one-time</span>
-            </div>
-            <div class="grid">
-              <div class="grid grid-2">
-                <div>
-                  <label for="paymentName">Name</label>
-                  <input id="paymentName" placeholder="Example: Electric bill" />
+        <div class="payments-summary-strip">
+          <div class="metric-box"><div class="metric-label">Current month total</div><div class="metric-value" id="currentMonthPaymentTotal">$0.00</div></div>
+          <div class="metric-box"><div class="metric-label">Still due</div><div class="metric-value" id="currentMonthUnpaidTotal">$0.00</div></div>
+          <div class="metric-box"><div class="metric-label">Saved payment setups</div><div class="metric-value" id="savedPaymentSetupCount">0</div></div>
+        </div>
+        <div class="payments-v82-grid">
+          <div class="panel filter-rail">
+            <div class="panel-title"><h3>Controls</h3><span class="muted">List first, form in drawer</span></div>
+            <div class="filter-rail-stack">
+              <button class="btn primary" onclick="openPaymentDrawer()">Add payment</button>
+              <button class="btn soft sort-toggle-btn" id="paymentSortToggleBtn" onclick="cycleCurrentPaymentSort()">Sort: Soonest</button>
+              <div><div class="muted" id="currentMonthPaymentSubtext">Current month only. 1st to last day.</div></div>
+              <div><h4 style="margin-bottom:8px;">Type colors</h4>
+                <div class="type-legend">
+                  <div class="legend-row"><span class="legend-swatch payment-type-bill"></span>Bill</div>
+                  <div class="legend-row"><span class="legend-swatch payment-type-credit-card"></span>Credit card</div>
+                  <div class="legend-row"><span class="legend-swatch payment-type-subscription"></span>Subscription</div>
+                  <div class="legend-row"><span class="legend-swatch payment-type-one-time"></span>One-time</div>
                 </div>
-                <div>
-                  <label for="paymentAmount">Amount</label>
-                  <div class="currency-wrap">
-                    <span class="currency-symbol">$</span>
-                    <input id="paymentAmount" inputmode="decimal" placeholder="0.00" oninput="handlePaymentAmountInput()" onblur="formatPaymentAmountField()" />
-                  </div>
-                </div>
-              </div>
-
-              <div class="grid grid-2">
-                <div>
-                  <label for="paymentType">Type</label>
-                  <select id="paymentType">
-                    <option value="bill">Bill</option>
-                    <option value="credit card">Credit Card</option>
-                    <option value="subscription">Subscription</option>
-                    <option value="one-time">One-Time</option>
-                  </select>
-                </div>
-                <div>
-                  <label for="paymentRecurring">Recurring monthly?</label>
-                  <select id="paymentRecurring" onchange="togglePaymentDateInputs()">
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="grid grid-2">
-                <div id="paymentDueDayWrap">
-                  <label for="paymentDueDay">Due day of month</label>
-                  <select id="paymentDueDay"></select>
-                </div>
-                <div id="paymentSpecificDateWrap" style="display:none;">
-                  <label for="paymentSpecificDate">Specific date</label>
-                  <input id="paymentSpecificDate" type="date" />
-                </div>
-                <div>
-                  <label for="paymentActive">Active?</label>
-                  <select id="paymentActive">
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label for="paymentNotes">Notes (optional)</label>
-                <textarea id="paymentNotes" placeholder="Anything helpful to remember..."></textarea>
-              </div>
-
-              <input type="hidden" id="paymentEditId" />
-              <div class="row">
-                <button class="btn primary" id="paymentSaveBtn" onclick="savePayment()">Save Payment</button>
-                <button class="btn soft" onclick="clearPaymentForm()">Clear</button>
-                <button class="btn warn" id="paymentCancelEditBtn" style="display:none;" onclick="cancelPaymentEdit()">Cancel Edit</button>
               </div>
             </div>
           </div>
-
-          <div>
-            <div class="panel">
-              <div class="panel-title">
-                <div>
-                  <h2 id="currentMonthPaymentHeading">Current month payments</h2>
-                  <span class="muted" id="currentMonthPaymentSubtext">Current month only. 1st to last day.</span>
-                </div>
-                <div class="row">
-                  <button class="btn soft sort-toggle-btn" id="paymentSortToggleBtn" onclick="cycleCurrentPaymentSort()">Sort: Soonest</button>
-                  <div class="current-total-box" id="currentMonthPaymentTotal">$0.00</div>
-                </div>
-              </div>
-              <div id="currentMonthPaymentList"></div>
-            </div>
-
-            <div class="panel" style="margin-bottom:0;">
-              <div class="panel-title">
-                <h3>Saved payment setups</h3>
-                <span class="muted">Edit, pause, resume, or remove</span>
-              </div>
-              <div id="paymentSetupList"></div>
-            </div>
-          </div>
+          <div class="panel"><div class="panel-title"><div><h2 id="currentMonthPaymentHeading">Current month payments</h2><span class="muted">Amount and due date first</span></div></div><div id="currentMonthPaymentList"></div></div>
+          <div class="panel"><div class="panel-title"><h3>Saved payment setups</h3><span class="muted">Edit, pause, resume, or remove</span></div><div id="paymentSetupList"></div></div>
         </div>
       </div>
-
       <div id="payments-month" class="subscreen">
         <div class="panel">
-          <div class="payments-month-toolbar">
-            <div>
-              <h2 id="paymentTrackHeading">Recurring month track</h2>
-              <div class="muted">Soonest to latest. Check them off as you go.</div>
-            </div>
-            <div class="row">
-              <button class="btn soft" onclick="changePaymentTrackMonth(-1)">Previous</button>
-              <button class="btn soft" onclick="resetPaymentTrackMonth()">This Month</button>
-              <button class="btn soft" onclick="changePaymentTrackMonth(1)">Next</button>
-            </div>
-          </div>
-          <div class="payments-month-toolbar" style="margin-top:0;">
-            <div class="muted" id="paymentTrackSubtext"></div>
-            <div class="payments-month-totals">
-              <div class="secondary-total-box" id="paymentTrackRemainingBox">$0.00 left</div>
-              <div class="current-total-box" id="paymentTrackTotalBox">$0.00</div>
-            </div>
-          </div>
+          <div class="payments-month-toolbar"><div><h2 id="paymentTrackHeading">Recurring month track</h2><div class="muted">Soonest to latest. Check them off as you go.</div></div><div class="row"><button class="btn soft" onclick="changePaymentTrackMonth(-1)">Previous</button><button class="btn soft" onclick="resetPaymentTrackMonth()">This Month</button><button class="btn soft" onclick="changePaymentTrackMonth(1)">Next</button></div></div>
+          <div class="payments-month-toolbar" style="margin-top:0;"><div class="muted" id="paymentTrackSubtext"></div><div class="payments-month-totals"><div class="secondary-total-box" id="paymentTrackRemainingBox">$0.00 left</div><div class="current-total-box" id="paymentTrackTotalBox">$0.00</div></div></div>
           <div id="paymentTrackList" class="track-list"></div>
         </div>
       </div>
-
       <div id="payments-history" class="subscreen">
-        <div class="panel">
-          <div class="panel-title">
-            <h2>Paid history by payment</h2>
-            <span class="muted">Lightweight monthly history</span>
-          </div>
-          <div id="paymentHistoryList"></div>
-        </div>
+        <div class="panel"><div class="panel-title"><h2>Paid history by payment</h2><span class="muted">Lightweight monthly history</span></div><div id="paymentHistoryList"></div></div>
       </div>
     </section>
 
@@ -1445,6 +1348,31 @@
             <div id="modalAssignableReminders"></div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="paymentDrawerBackdrop" class="drawer-backdrop" onclick="closePaymentDrawer(event)">
+    <div class="drawer" onclick="event.stopPropagation()">
+      <div class="drawer-header"><div><h3 id="paymentDrawerTitle">Add / Edit Payment</h3><div class="muted">Bills, cards, subscriptions, one-time</div></div><button class="modal-close" onclick="closePaymentDrawer()">Close</button></div>
+      <div class="grid">
+        <div class="grid grid-2">
+          <div><label for="paymentName">Name</label><input id="paymentName" placeholder="Example: Electric bill" /></div>
+          <div><label for="paymentAmount">Amount</label><div class="currency-wrap"><span class="currency-symbol">$</span><input id="paymentAmount" inputmode="decimal" placeholder="0.00" oninput="handlePaymentAmountInput()" onblur="formatPaymentAmountField()" /></div></div>
+        </div>
+        <div class="grid grid-2">
+          <div><label for="paymentType">Type</label><select id="paymentType"><option value="bill">Bill</option><option value="credit card">Credit Card</option><option value="subscription">Subscription</option><option value="one-time">One-Time</option></select></div>
+          <div><label for="paymentRecurring">Recurring monthly?</label><select id="paymentRecurring" onchange="togglePaymentDateInputs()"><option value="true">Yes</option><option value="false">No</option></select></div>
+        </div>
+        <div class="grid grid-2">
+          <div id="paymentDueDayWrap"><label for="paymentDueDay">Due day of month</label><select id="paymentDueDay"></select></div>
+          <div id="paymentSpecificDateWrap" style="display:none;"><label for="paymentSpecificDate">Specific date</label><input id="paymentSpecificDate" type="date" /></div>
+          <div><label for="paymentActive">Active?</label><select id="paymentActive"><option value="true">Yes</option><option value="false">No</option></select></div>
+        </div>
+        <div><label for="paymentNotes">Notes (optional)</label><textarea id="paymentNotes" placeholder="Anything helpful to remember..."></textarea></div>
+        <input type="hidden" id="paymentEditId" />
+        <div class="row"><button class="btn primary" id="paymentSaveBtn" onclick="savePayment()">Save Payment</button><button class="btn soft" onclick="clearPaymentForm()">Clear</button><button class="btn warn" id="paymentCancelEditBtn" style="display:none;" onclick="cancelPaymentEdit()">Cancel Edit</button></div>
       </div>
     </div>
   </div>
@@ -1724,6 +1652,16 @@
       document.getElementById("workCancelEditBtn").style.display = "none";
     }
 
+    function openPaymentDrawer(){
+      document.getElementById("paymentDrawerBackdrop")?.classList.add("open");
+      if(document.getElementById("paymentDrawerTitle")) document.getElementById("paymentDrawerTitle").textContent = document.getElementById("paymentEditId")?.value ? "Edit Payment" : "Add / Edit Payment";
+    }
+
+    function closePaymentDrawer(event){
+      if(event && event.target !== document.getElementById("paymentDrawerBackdrop")) return;
+      document.getElementById("paymentDrawerBackdrop")?.classList.remove("open");
+    }
+
     function clearPaymentForm(){
       document.getElementById("paymentName").value = "";
       document.getElementById("paymentAmount").value = "";
@@ -1737,11 +1675,12 @@
       document.getElementById("paymentSaveBtn").textContent = "Save Payment";
       document.getElementById("paymentCancelEditBtn").style.display = "none";
       togglePaymentDateInputs();
+      const drawerTitle = document.getElementById("paymentDrawerTitle"); if(drawerTitle) drawerTitle.textContent = "Add / Edit Payment";
     }
 
     function cancelTaskEdit(){ clearTaskForm(); }
     function cancelWorkEdit(){ clearWorkForm(); }
-    function cancelPaymentEdit(){ clearPaymentForm(); }
+    function cancelPaymentEdit(){ clearPaymentForm(); closePaymentDrawer(); }
 
     function saveDontForget(){
       const thought = document.getElementById("dfThought").value.trim();
@@ -1900,6 +1839,7 @@
 
       persistAll();
       clearPaymentForm();
+      closePaymentDrawer();
       renderAll();
     }
 
@@ -2494,51 +2434,28 @@
 
     function renderHome(){
       document.getElementById("homeDateLabel").textContent = friendlyPageDate();
-
       const tasks = items.filter(i => i.type === "task");
       const dontForget = items.filter(i => i.type === "dontForget");
       const openTasks = tasks.filter(i => i.status !== "done");
       const waiting = tasks.filter(i => i.status === "waiting");
-
       const topThree = computeTop3Tasks();
       const top3Ids = new Set(topThree.map(t => t.id));
-      const pickBackUp = computePickBackUp(top3Ids);
-      const recentDontForget = sortItems(dontForget.filter(i => i.status !== "done")).slice(0,5);
-      const paymentsDueSoon = getPaymentsDueSoon(10).slice(0,8);
-
+      const pickBackUp = computePickBackUp(top3Ids).slice(0,4);
+      const recentDontForget = sortItems(dontForget.filter(i => i.status !== "done")).slice(0,6);
+      const paymentsDueSoon = getPaymentsDueSoon(10).slice(0,5);
       document.getElementById("statOpen").textContent = openTasks.length;
       document.getElementById("statToday").textContent = tasks.filter(i => i.date === todayString() && i.status !== "done").length;
       document.getElementById("statDontForget").textContent = dontForget.length;
       document.getElementById("statWaiting").textContent = waiting.length;
-
-      const cards = [
-        sectionCardHtml(
-          "Top 3 for today",
-          "Hard cap. No chaos buffet.",
-          topThree.length ? topThree.map(i => renderItemCard(i, { dashboard:true })).join("") : `<div class="empty">Nothing urgent right now.</div>`,
-          "blue"
-        ),
-        sectionCardHtml(
-          "Payments due soon",
-          "Overdue first, then upcoming",
-          paymentsDueSoon.length ? paymentsDueSoon.map(o => renderPaymentOccurrenceCard(o, { dashboard:true })).join("") : `<div class="empty">No payments due soon.</div>`,
-          "green"
-        ),
-        sectionCardHtml(
-          "Pick back up",
-          "Carries over until you attend to it",
-          pickBackUp.length ? pickBackUp.map(i => renderItemCard(i, { dashboard:true, alert: staleDays(i) > 7 })).join("") : `<div class="empty">Nothing waiting to pick back up.</div>`,
-          "amber"
-        ),
-        sectionCardHtml(
-          "Saved reminders",
-          "Recent Don’t Forget notes",
-          recentDontForget.length ? recentDontForget.map(i => renderItemCard(i, { dashboard:true })).join("") : `<div class="empty">No reminders saved yet.</div>`,
-          "lavender"
-        )
-      ];
-
-      document.getElementById("homeDashboard").innerHTML = `<div class="dashboard-grid">${cards.join("")}</div>`;
+      document.getElementById("homeTopThree").innerHTML = topThree.length ? topThree.map(i => renderItemCard(i)).join("") : `<div class="empty">Nothing urgent right now.</div>`;
+      document.getElementById("homePickBackUp").innerHTML = pickBackUp.length ? pickBackUp.map(i => renderItemCard(i, { alert: staleDays(i) > 7 })).join("") : `<div class="empty">Nothing waiting to pick back up.</div>`;
+      document.getElementById("homeDueSoon").innerHTML = paymentsDueSoon.length ? paymentsDueSoon.map(o => renderPaymentOccurrenceCard(o)).join("") : `<div class="empty">No payments due soon.</div>`;
+      document.getElementById("homeSavedReminders").innerHTML = recentDontForget.length ? recentDontForget.map(i => renderItemCard(i)).join("") : `<div class="empty">No reminders saved yet.</div>`;
+      const previewDates = [0,1,2].map(offset => { const d = new Date(); d.setDate(d.getDate() + offset); const ymd = formatDateYMD(d); return { ymd, label: d.toLocaleDateString(undefined,{ weekday:"short", month:"short", day:"numeric" }) }; });
+      document.getElementById("homeCalendarPreview").innerHTML = previewDates.map(({ymd,label}) => {
+        const dayItems = getMergedItemsForDate(ymd).slice(0,3);
+        return `<div class="mini-day"><div class="mini-day-label">${escapeHtml(label)}</div>${dayItems.length ? dayItems.map(item => { let cssType = "task"; let label = item.title || "(No title)"; if(item.kind === "paymentOccurrence"){ cssType = "payment"; label = item.status === "paid" ? `✓ ${item.title}` : `💳 ${item.title}`; } else if(item.kind === "work"){ cssType = "work"; } else if(item.type === "dontForget"){ cssType = "reminder"; } else if(item.status === "done"){ cssType = "done"; } return `<div class="day-pill ${cssType}">${escapeHtml(label)}</div>`; }).join("") : `<div class="empty">No items.</div>`}</div>`;
+      }).join("");
     }
 
     function renderTasks(){
@@ -2560,26 +2477,22 @@
       document.getElementById("paymentSortToggleBtn").textContent = `Sort: ${paymentSortLabel(currentPaymentSortMode)}`;
       document.getElementById("currentMonthPaymentList").innerHTML = currentMonthOccs.length ? currentMonthOccs.map(o => renderPaymentOccurrenceCard(o)).join("") : `<div class="empty">No payments for this month.</div>`;
       document.getElementById("currentMonthPaymentTotal").textContent = currentMonthPaymentTotal();
-
+      document.getElementById("currentMonthUnpaidTotal").textContent = `$${currentMonthOccs.filter(o => o.status !== "paid").reduce((sum,o) => sum + parseCurrencyToNumber(o.amount),0).toFixed(2)}`;
       const setups = sortPayments(payments);
+      document.getElementById("savedPaymentSetupCount").textContent = String(setups.length);
       document.getElementById("paymentSetupList").innerHTML = setups.length ? setups.map(p => renderPaymentTemplateCard(p)).join("") : `<div class="empty">No saved payment setups yet.</div>`;
-
       const trackOccs = getRecurringTrackOccurrences();
-      document.getElementById("paymentTrackHeading").textContent = `Recurring month track · ${monthLabelFromDate(paymentTrackMonthDate)}`;
-      document.getElementById("paymentTrackSubtext").textContent = `${trackOccs.filter(occ => occ.status !== "paid").length} left to check off`;
-      document.getElementById("paymentTrackTotalBox").textContent = recurringTrackTotal();
-      document.getElementById("paymentTrackRemainingBox").textContent = `${recurringTrackRemainingTotal()} left`;
-      document.getElementById("paymentTrackList").innerHTML = trackOccs.length
-        ? trackOccs.map(o => renderPaymentOccurrenceCard(o)).join("")
-        : `<div class="empty">No active recurring payments for this month.</div>`;
-
+      document.getElementById("paymentTrackHeading").textContent = `Recurring month track · ${monthLabelFromDate(paymentTrackDate)}`;
+      document.getElementById("paymentTrackSubtext").textContent = `${trackOccs.length} recurring payment${trackOccs.length === 1 ? "" : "s"} in this month.`;
+      document.getElementById("paymentTrackList").innerHTML = trackOccs.length ? trackOccs.map(o => renderPaymentOccurrenceCard(o)).join("") : `<div class="empty">No recurring payments in this month.</div>`;
+      document.getElementById("paymentTrackTotalBox").textContent = `$${trackOccs.reduce((sum,o) => sum + parseCurrencyToNumber(o.amount), 0).toFixed(2)}`;
+      document.getElementById("paymentTrackRemainingBox").textContent = `$${trackOccs.filter(o => o.status !== "paid").reduce((sum,o) => sum + parseCurrencyToNumber(o.amount), 0).toFixed(2)} left`;
       const history = getPaidHistoryByPayment();
-      document.getElementById("paymentHistoryList").innerHTML = history.length
-        ? history.map(group => `
+      document.getElementById("paymentHistoryList").innerHTML = history.length ? history.map(group => `
             <div class="panel">
               <div class="panel-title">
                 <h3>${escapeHtml(group.payment.name)}</h3>
-                <span class="muted">${escapeHtml(displayCurrency(group.payment.amount))}</span>
+                <span class="muted">${group.payment.amount ? escapeHtml(String(group.payment.amount)) : ""}</span>
               </div>
               ${group.rows.map(row => `
                 <div class="history-row">
@@ -2588,8 +2501,7 @@
                 </div>
               `).join("")}
             </div>
-          `).join("")
-        : `<div class="empty">No paid history yet.</div>`;
+          `).join("") : `<div class="empty">No paid history yet.</div>`;
     }
 
     function renderCompleted(){
